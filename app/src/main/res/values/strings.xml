@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ComponentsBasicSample</string>
+    <string name="navigate">Navigate</string>
+    <string name="appLabel">Label Name</string>
+</resources>
