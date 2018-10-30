@@ -14,11 +14,13 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
         val titleText = rowView.findViewById(R.id.title) as TextView
         val imageView = rowView.findViewById(R.id.icon) as ImageView
-        val subtitleText = rowView.findViewById(R.id.description) as TextView
+        val executerText = rowView.findViewById(R.id.executer) as TextView
+        val yearText = rowView.findViewById(R.id.year) as TextView
 
         titleText.text = listAlboms[position].getAlbomName();
        // imageView.setImageResource(listAlboms[position].getDirPng())
-        subtitleText.text =  listAlboms[position].getExecutor()
+        executerText.text =  listAlboms[position].getExecutor()
+        yearText.text = listAlboms[position].getYear()
 
         return rowView
     }
