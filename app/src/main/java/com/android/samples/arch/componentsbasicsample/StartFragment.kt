@@ -1,5 +1,6 @@
 package com.android.samples.arch.componentsbasicsample
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -48,6 +49,8 @@ class StartFragment : Fragment() {
 
         var listAlboms = ArrayList<String>();
 
+        var listAlbomsItems = ArrayList<Albom>();
+
         var cursor = db.rawQuery("SELECT * FROM 'albom'", null);
 
         if (cursor.moveToFirst()) {
@@ -57,21 +60,28 @@ class StartFragment : Fragment() {
                 val albomName = cursor.getString(cursor.getColumnIndex("AlbomName"))
                 val executor = cursor.getString(cursor.getColumnIndex("Executor"))
                 val year = cursor.getString(cursor.getColumnIndex("Year"))
+                val dirPng = cursor.getString(cursor.getColumnIndex("DirPng"))
+                val teg = cursor.getString(cursor.getColumnIndex("Teg"))
 
                 listAlboms.add(albomName)
+
+                listAlbomsItems.add(Albom(id,albomName,executor,year,dirPng,teg))
+
 
             } while (cursor.moveToNext())
         }
 
         val listItems = listOf(listAlboms)
-        var adapter = ArrayAdapter(this.context, android.R.layout.simple_list_item_1, listAlboms)
+      //  var adapter = ArrayAdapter(this.context, android.R.layout.simple_list_item_1, listAlboms)
+
+        val myListAdapter = AlbomAdapter(this.context as Activity,listAlbomsItems,listAlboms)
 
 
         // Observe data on the ViewModel, exposed as a LiveData
         viewModel.data.observe(this, Observer { data ->
             // Set the text exposed by the LiveData
             view?.findViewById<TextView>(R.id.text)?.text = data
-            view?.findViewById<ListView>(R.id.listAlbom)?.adapter = adapter
+            view?.findViewById<ListView>(R.id.listAlbom)?.adapter = myListAdapter //adapter
 
         })
 
