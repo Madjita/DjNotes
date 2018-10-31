@@ -55,7 +55,7 @@ class StartActivity : AppCompatActivity() {
             db.execSQL(albom.CREATE_TABLE);
 
             var x = 0
-            while (x < 20) {
+            while (x < 3) {
                 x++
                 db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Executor', 'Year') VALUES ( 'Albom $x', 'Executor $x','$x' )");
 

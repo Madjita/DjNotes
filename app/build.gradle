@@ -22,6 +22,7 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+
 android {
     compileSdkVersion versions.target_sdk
     defaultConfig {
@@ -53,6 +54,19 @@ android {
 }
 
 dependencies {
+    def nav_version = "1.0.0-alpha07"
+
+    implementation 'com.android.support:support-v4:27.1.1'
+    compile "org.jetbrains.anko:anko-commons:0.10.2"
+    compile "org.jetbrains.anko:anko-design:0.10.2"
+
+    implementation "android.arch.navigation:navigation-fragment:$nav_version" // use -ktx for Kotlin
+    implementation "android.arch.navigation:navigation-ui:$nav_version" // use -ktx for Kotlin
+
+    // optional - Test helpers
+    // this library depends on the Kotlin standard library
+    androidTestImplementation "android.arch.navigation:navigation-testing:$nav_version"
+
     // See versions.gradle file
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"

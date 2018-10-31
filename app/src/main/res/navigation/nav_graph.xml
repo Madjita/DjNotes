@@ -13,19 +13,40 @@
   -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             app:startDestination="@+id/launcher_home">
 
     <fragment android:id="@+id/launcher_home"
               android:label="Home"
-              android:name="com.android.samples.arch.componentsbasicsample.StartFragment" >
+              android:name="com.android.samples.arch.componentsbasicsample.StartFragment"
+                tools:layout="@layout/fragment_start">
 
         <action android:id="@+id/end_action" app:destination="@id/end_dest"/>
+        <action
+            android:id="@+id/addAlbomFragment_action"
+            app:destination="@id/addAlbomFragment" />
+
+
+
+        <argument
+            android:name="albomItem"
+            app:argType="reference" />
+
 
     </fragment>
 
     <fragment android:id="@+id/end_dest"
               android:label="End"
-              android:name="com.android.samples.arch.componentsbasicsample.EndFragment" >
+              android:name="com.android.samples.arch.componentsbasicsample.EndFragment"
+        tools:layout="@layout/fragment_end">
 
     </fragment>
+
+    <fragment
+        android:id="@+id/addAlbomFragment"
+        android:name="com.android.samples.arch.componentsbasicsample.AddAlbomFragment"
+        android:label="fragment_add_albom"
+        tools:layout="@layout/fragment_add_albom" />
+
+
 </navigation>

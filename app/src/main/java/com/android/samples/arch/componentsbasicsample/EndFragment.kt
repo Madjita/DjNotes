@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.Navigation
+import java.util.ArrayList
 
 class EndFragment : Fragment() {
 
@@ -30,11 +31,47 @@ class EndFragment : Fragment() {
         // Obtain ViewModel from ViewModelProviders, using this fragment as LifecycleOwner.
         viewModel = ViewModelProviders.of(this).get(EndViewModel::class.java)
 
+
+        val id = arguments?.getString("albomItem")?.toInt();
+
+
+        var db = dbHelper.writableDatabase
+
+        var albom: Albom? = null;
+
+
+        var cursor = db.rawQuery("SELECT * FROM 'albom' Where id='$id'", null);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                val id = cursor.getInt(cursor.getColumnIndex("id"))
+                val albomName = cursor.getString(cursor.getColumnIndex("AlbomName"))
+                val executor = cursor.getString(cursor.getColumnIndex("Executor"))
+                val year = cursor.getString(cursor.getColumnIndex("Year"))
+                val dirPng = cursor.getString(cursor.getColumnIndex("DirPng"))
+                val teg = cursor.getString(cursor.getColumnIndex("Teg"))
+
+                albom = Albom(id,albomName,executor,year,dirPng,teg);
+
+
+
+            } while (cursor.moveToNext())
+        }
+
+
         // Observe data on the ViewModel, exposed as a LiveData
         viewModel.data.observe(this, Observer { data ->
+
             // Set the text exposed by the LiveData
-            view?.findViewById<TextView>(R.id.text)?.text = data
+            view?.findViewById<TextView>(R.id.text)?.text = albom?.getExecutor()
         })
 
     }
+
+    public fun setData(data:String)
+    {
+        view?.findViewById<TextView>(R.id.text)?.text = data
+    }
+
 }
