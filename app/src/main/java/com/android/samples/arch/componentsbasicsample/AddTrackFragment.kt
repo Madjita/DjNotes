@@ -1,7 +1,5 @@
 package com.android.samples.arch.componentsbasicsample
 
-import android.app.Activity
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -10,17 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
 import androidx.navigation.Navigation
-import org.w3c.dom.Text
 import java.util.ArrayList
-import java.util.Observer
-import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
-import android.content.Context.INPUT_METHOD_SERVICE
-
-
-
-
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,15 +22,14 @@ private const val ARG_PARAM2 = "param2"
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [AddAlbomFragment.OnFragmentInteractionListener] interface
+ * [AddTrackFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [AddAlbomFragment.newInstance] factory method to
+ * Use the [AddTrackFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class AddAlbomFragment : Fragment() {
+class AddTrackFragment : Fragment() {
 
-    private lateinit var viewModel: EndViewModel
 
     companion object {
         fun newInstance() = StartFragment()
@@ -49,7 +39,7 @@ class AddAlbomFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
 
     ): View? {
-        return inflater.inflate(R.layout.fragment_add_albom, container, false)
+        return inflater.inflate(R.layout.fragment_add_track, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -57,26 +47,37 @@ class AddAlbomFragment : Fragment() {
 
         var db = dbHelper.writableDatabase
 
+        val id = arguments?.getString("albomId")?.toInt();
+
+        view?.findViewById<Button>(R.id.buttonAddTreck)?.setOnClickListener {
 
 
-        view?.findViewById<Button>(R.id.button)?.setOnClickListener {
-
-
-           var albomName =  view?.findViewById<EditText>(R.id.editText_albom)?.text.toString();
-           var executer =  view?.findViewById<EditText>(R.id.editText_executor)?.text.toString();
-            var year =  view?.findViewById<EditText>(R.id.editText_year)?.text.toString();
-            var dirpng =  view?.findViewById<EditText>(R.id.editText_dirpng)?.text.toString();
-            var teg =  view?.findViewById<EditText>(R.id.editText_teg)?.text.toString();
+            var trackName =  view?.findViewById<EditText>(R.id.editText_trackName)?.text.toString();
+            var timeTrack =  view?.findViewById<EditText>(R.id.editText_timeTrack)?.text.toString();
+            var teg =  view?.findViewById<EditText>(R.id.editText_tegTrack)?.text.toString();
 
             var list: ArrayList<String>? = null;
 
-            list?.add(albomName);
-            list?.add(executer);
-            list?.add(year);
-            list?.add(dirpng);
+            list?.add(trackName);
+            list?.add(timeTrack);
             list?.add(teg);
 
-            db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Executor', 'Year') VALUES ( '$albomName', '$executer','$year' )");
+            db.execSQL("INSERT INTO 'track' ( 'TrackName', 'Time','Teg') VALUES ( '$trackName', '$timeTrack','$teg' )");
+
+
+            var cursor = db.rawQuery("SELECT * FROM 'track' WHERE TrackName = '$trackName'", null);
+
+            if (cursor.moveToFirst()) {
+
+                do {
+                    val idTreack = cursor.getInt(cursor.getColumnIndex("id"))
+                    db.execSQL("INSERT INTO 'link_albom_track' ( 'idAlbom','idTreack') VALUES ( '$id', '$idTreack' )");
+
+                } while (cursor.moveToNext())
+            }
+
+
+
 
             //Закрытие клавиатуры
             val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -88,6 +89,7 @@ class AddAlbomFragment : Fragment() {
 
 
         }
+
 
     }
 

@@ -19,9 +19,11 @@ class StartActivity : AppCompatActivity() {
 
         var flgaAlbom = false;
         val albom = Albom(0,null,null,null,null,null);
-
+        val track = Track(0,null,null,null);
 
         db.execSQL("DROP TABLE IF EXISTS '"+albom.TABLE_NAME+"'");
+        db.execSQL("DROP TABLE IF EXISTS '"+track.TABLE_NAME+"'");
+        db.execSQL("DROP TABLE IF EXISTS 'link_albom_track'");
 
 
         var listTable = ArrayList<String>();
@@ -53,14 +55,31 @@ class StartActivity : AppCompatActivity() {
 
         if(flgaAlbom == false) {
             db.execSQL(albom.CREATE_TABLE);
+            db.execSQL(track.CREATE_TABLE);
+
+            db.execSQL("CREATE TABLE link_albom_track (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "idAlbom TEXT NOT NULL," +
+                    "idTreack TEXT NOT NULL" +
+                    ")");
 
             var x = 0
-            while (x < 3) {
+            while (x < 2) {
                 x++
-                db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Executor', 'Year') VALUES ( 'Albom $x', 'Executor $x','$x' )");
+                db.execSQL("INSERT INTO '"+albom.TABLE_NAME+"' ( 'AlbomName', 'Executor', 'Year') VALUES ( 'Albom $x', 'Executor $x','$x' )");
+
+            }
+            x = 0;
+
+            while (x < 2) {
+                x++
+                db.execSQL("INSERT INTO '"+track.TABLE_NAME+"' ( 'TrackName', 'Time') VALUES ( 'TrackName $x', '$x:$x' )");
 
             }
 
+            db.execSQL("INSERT INTO 'link_albom_track' ( 'idAlbom','idTreack') VALUES ( '1', '1' )");
+            db.execSQL("INSERT INTO 'link_albom_track' ( 'idAlbom','idTreack') VALUES ( '1', '2' )");
+            db.execSQL("INSERT INTO 'link_albom_track' ( 'idAlbom','idTreack') VALUES ( '2', '2' )");
 
         }
 
@@ -81,11 +100,6 @@ class StartActivity : AppCompatActivity() {
 
             } while (cursor.moveToNext())
         }
-
-
-
-
-
 
 
 

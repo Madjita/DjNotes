@@ -14,10 +14,10 @@ import android.widget.TextView
 import androidx.navigation.Navigation
 
 import android.widget.ArrayAdapter;
-import java.util.ArrayList;
 import kotlin.properties.Delegates
 
 import android.widget.Toast
+import java.util.*
 
 class StartFragment : Fragment() {
 
@@ -41,13 +41,9 @@ class StartFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(StartViewModel::class.java);
 
 
-
         var db = dbHelper.writableDatabase
-
         var listAlboms = ArrayList<String>();
-
         var listAlbomsItems = ArrayList<Albom>();
-
         var cursor = db.rawQuery("SELECT * FROM 'albom'", null);
 
         if (cursor.moveToFirst()) {
@@ -61,17 +57,21 @@ class StartFragment : Fragment() {
                 val teg = cursor.getString(cursor.getColumnIndex("Teg"))
 
                 listAlboms.add(albomName)
-
                 listAlbomsItems.add(Albom(id,albomName,executor,year,dirPng,teg))
 
 
             } while (cursor.moveToNext())
         }
 
-      //  val listItems = listOf(listAlboms)
-      //  var adapter = ArrayAdapter(this.context, android.R.layout.simple_list_item_1, listAlboms)
+        //перевернуть массив
+        Collections.reverse(listAlboms)
+        Collections.reverse(listAlbomsItems)
 
         val myListAdapter = AlbomAdapter(this.context as Activity,listAlbomsItems,listAlboms)
+
+
+      //  val listItems = listOf(listAlboms)
+      //  var adapter = ArrayAdapter(this.context, android.R.layout.simple_list_item_1, listAlboms)
 
 
 
@@ -95,8 +95,6 @@ class StartFragment : Fragment() {
 
 
     }
-
-
 
 
 

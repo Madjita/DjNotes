@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3fb564</color>
     <color name="colorPrimaryDark">#ea3cbf00</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="Black">#000000</color>
+    <color name="Container">#FF363640</color> <!--100 % opasity-->
+    <color name="Text">#FFFFFFFF</color> <!--100 % opasity-->
+    <color name="Icons">#99FFFFFF</color> <!--60 % opasity-->
+    
 </resources>

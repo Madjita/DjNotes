@@ -27,7 +27,6 @@
             app:destination="@id/addAlbomFragment" />
 
 
-
         <argument
             android:name="albomItem"
             app:argType="reference" />
@@ -40,6 +39,13 @@
               android:name="com.android.samples.arch.componentsbasicsample.EndFragment"
         tools:layout="@layout/fragment_end">
 
+        <action
+            android:id="@+id/action_end_dest_to_AddTrackFragment"
+            app:destination="@id/AddTrackFragment" />
+        <argument android:name="albomId" />
+
+
+
     </fragment>
 
     <fragment
@@ -47,6 +53,12 @@
         android:name="com.android.samples.arch.componentsbasicsample.AddAlbomFragment"
         android:label="fragment_add_albom"
         tools:layout="@layout/fragment_add_albom" />
+
+    <fragment
+        android:id="@+id/AddTrackFragment"
+        android:name="com.android.samples.arch.componentsbasicsample.AddTrackFragment"
+        android:label="fragment_add_track"
+        tools:layout="@layout/fragment_add_track" />
 
 
 </navigation>

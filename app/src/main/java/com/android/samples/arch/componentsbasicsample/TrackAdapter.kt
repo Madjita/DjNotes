@@ -2,46 +2,36 @@ package com.android.samples.arch.componentsbasicsample
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Fragment
 import android.graphics.Color
-import android.os.Handler
 import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.accessibility.AccessibilityEvent
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.navigation.Navigation
-
 import org.jetbrains.anko.bundleOf
-import java.util.*
-import android.util.DisplayMetrics
+import java.util.ArrayList
 
-
-
-class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayList<Albom>,private val listTitle: ArrayList<String>)
-    : ArrayAdapter<String>(context, R.layout.custom_listalbom, listTitle) {
+class TrackAdapter(private val context: Activity, private val listTracks: ArrayList<Track>, private val listTrakName: ArrayList<String>)
+    : ArrayAdapter<String>(context, R.layout.custom_listtrack, listTrakName) {
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater
-        val rowView = inflater.inflate(R.layout.custom_listalbom, null, true)
+        val rowView = inflater.inflate(R.layout.custom_listtrack, null, true)
 
-        val titleText = rowView.findViewById(R.id.title) as TextView
-        val imageView = rowView.findViewById(R.id.icon) as ImageView
-        val executerText = rowView.findViewById(R.id.executer) as TextView
-        val yearText = rowView.findViewById(R.id.year) as TextView
+        val trackText = rowView.findViewById(R.id.trackName) as TextView
+        val timeText = rowView.findViewById(R.id.timeTrack) as TextView
 
-        titleText.text = listAlboms[position].getAlbomName();
-       // imageView.setImageResource(listAlboms[position].getDirPng())
-        executerText.text =  listAlboms[position].getExecutor()
-        yearText.text = listAlboms[position].getYear()
-
-        var x:Int = 0;
+        trackText.text = listTracks[position].getTrackName();
+        timeText.text =  listTracks[position].getTime();
 
         var x_down:Float = 0F;
 
-        var itrmloyaot =  rowView.findViewById(R.id.item) as CardView
+        var itrmloyaot =  rowView.findViewById(R.id.itemTrack) as CardView
 
         var defaultColor = itrmloyaot.solidColor
 
@@ -53,41 +43,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
         var time:Long = 0;
 
 
-//        rowView.setOnClickListener {
-//
-//            if(flag_down && flag_up && (flag_move == false)) {
-//
-//                flag_down = false;
-//                flag_move = false;
-//                flag_up = false;
-//
-//                rowView?.let {
-//
-//                    var bundle = bundleOf("albomItem" to listAlboms[position].getId().toString())
-//                    Navigation.findNavController(it).navigate(R.id.end_action, bundle)
-//                }
-//
-//            }
-//
-//        }
-
-
-     //  val del_button =  rowView.findViewById(R.id.albom_del) as TextView;
-
         var db = dbHelper.writableDatabase
-
-
-//        del_button.setOnClickListener {
-//
-//            db.execSQL("DELETE FROM 'albom' WHERE id ='"+listAlboms[position].getId()+"'")
-//
-//            listTitle.removeAt(position);
-//            listAlboms.removeAt(position);
-//            this.notifyDataSetChanged();
-//
-//        }
-
-
 
 
         rowView.setOnTouchListener (object : View.OnTouchListener {
@@ -106,11 +62,8 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                         flag_move = false;
                         flag_up = false;
 
-
-
                         x_down = event?.getX()
 
-                        Log.w("ACTION_DOWN", x_down.toString());
                     }
 
                     MotionEvent.ACTION_MOVE -> {
@@ -120,8 +73,8 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
                         if(deltaTime > 150) {
 
-                                event?.action = MotionEvent.ACTION_UP;
-                                return true
+                            event?.action = MotionEvent.ACTION_UP;
+                            return true
 
 
 //                            if((x_down-event?.getX()) > 200 )
@@ -149,11 +102,6 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                     MotionEvent.ACTION_UP -> {
                         flag_move = false;
                         flag_up = true;
-                        x = 0;
-
-
-                        //itrmloyaot.setPadding(0,0,0,0)
-
 
 
                         if(deltaTime < 100)
@@ -169,11 +117,9 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                             flag_up = false;
 
 
-                            v?.let {
-
-                                var bundle = bundleOf("albomItem" to listAlboms[position].getId().toString())
-                                Navigation.findNavController(it).navigate(R.id.end_action, bundle)
-                            }
+//                            v?.let {
+//                                Navigation.findNavController(it).navigate(R.id.action_end_dest_to_AddTrackFragment)
+//                            }
                         }
                         else
                         {
@@ -194,10 +140,10 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                             // Set a positive button and its click listener on alert dialog
                             builder.setPositiveButton("Да"){dialog, which ->
 
-                                db.execSQL("DELETE FROM 'albom' WHERE id ='"+listAlboms[position].getId()+"'")
+                                db.execSQL("DELETE FROM 'track' WHERE id ='"+listTracks[position].getId()+"'")
 
-                                listTitle.removeAt(position);
-                                listAlboms.removeAt(position);
+                                listTracks.removeAt(position);
+                                listTrakName.removeAt(position);
                                 notifyDataSetChanged();
 
 
@@ -247,7 +193,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                 return true
             }
         })
-        
+
 
 
         return rowView

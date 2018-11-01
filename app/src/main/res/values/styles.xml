@@ -6,9 +6,18 @@
         <!--<item name="windowActionBar">false</item>-->
         <!--<item name="windowNoTitle">true</item>-->
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+
+
+        <item name="colorPrimaryDark">@color/Black</item>
+        <item name="colorAccent">@color/Black</item>
+        <item name="colorPrimary">@color/Container</item>
+        <item name="android:textColorPrimary">@color/Black</item>
+        <item name="android:windowBackground">@color/Text</item>
+        <item name="android:navigationBarColor">@color/Container</item>
+
     </style>
 
 </resources>
