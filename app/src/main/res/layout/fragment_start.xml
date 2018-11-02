@@ -46,11 +46,10 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addAlbom_bt"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@android:drawable/ic_input_add"

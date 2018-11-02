@@ -3,7 +3,9 @@ package com.android.samples.arch.componentsbasicsample
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Fragment
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Handler
 import android.support.v7.widget.CardView
 import android.util.Log
@@ -17,6 +19,18 @@ import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 import java.util.*
 import android.util.DisplayMetrics
+import java.io.File
+import java.net.URL
+import java.nio.file.Files.exists
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.net.Uri.parse
+import android.os.Environment
+import android.support.v4.provider.DocumentFile
+import org.jetbrains.anko.Android
+import java.net.URI
+import java.nio.file.Files.exists
+
 
 
 
@@ -33,8 +47,21 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
         val yearText = rowView.findViewById(R.id.year) as TextView
 
         titleText.text = listAlboms[position].getAlbomName();
-       // imageView.setImageResource(listAlboms[position].getDirPng())
-      //  executerText.text =  listAlboms[position].getExecutor()
+
+        var path = listAlboms[position].getDirPng();
+        var uri = Uri.parse(path);
+
+
+
+        if(path != "null")
+        {
+            imageView.setImageURI(null);
+            imageView.setImageURI(uri); //Uri.parse(path)
+
+           // Uri.fromFile( File(imageView));
+
+        }
+
         yearText.text = listAlboms[position].getYear()
 
         var x:Int = 0;

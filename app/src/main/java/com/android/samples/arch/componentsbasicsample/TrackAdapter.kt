@@ -3,6 +3,7 @@ package com.android.samples.arch.componentsbasicsample
 import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Color
+import android.net.Uri
 import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.MotionEvent
@@ -14,7 +15,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
-import java.util.ArrayList
 
 class TrackAdapter(private val context: Activity, private val listTracks: ArrayList<Track>, private val listTrakName: ArrayList<String>)
     : ArrayAdapter<String>(context, R.layout.custom_listtrack, listTrakName) {
@@ -28,6 +28,8 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
 
         trackText.text = listTracks[position].getTrackName();
         timeText.text =  listTracks[position].getTime();
+
+
 
         var x_down:Float = 0F;
 

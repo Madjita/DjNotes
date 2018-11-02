@@ -3,6 +3,8 @@ package com.android.samples.arch.componentsbasicsample
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
@@ -12,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.navigation.Navigation
@@ -120,9 +123,23 @@ class EndFragment : Fragment() {
             // Set the text exposed by the LiveData
            // view?.findViewById<TextView>(R.id.text)?.text = albom?.getExecutor()
 
+
+            var path = albom?.getDirPng();
+
+            if(path != "null")
+            {
+                view?.findViewById<ImageView>(R.id.backdrop)?.setImageURI(Uri.parse(path));
+            }
+
+
             var listView = view?.findViewById<ListView>(R.id.listTrack)
             listView?.adapter = myListAdapter
         })
+
+
+
+
+
 
     }
 
