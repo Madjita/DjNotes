@@ -16,22 +16,32 @@ import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 import java.util.ArrayList
 
-class TrackAdapter(private val context: Activity, private val listTracks: ArrayList<Track>, private val listTrakName: ArrayList<String>)
-    : ArrayAdapter<String>(context, R.layout.custom_listtrack, listTrakName) {
+
+
+class ExecutorAdapter(private val context: Activity, private val listExecutors: ArrayList<Executor>, private val listTitle: ArrayList<String>)
+    : ArrayAdapter<String>(context, R.layout.custom_listexecutor, listTitle) {
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater
-        val rowView = inflater.inflate(R.layout.custom_listtrack, null, true)
+        val rowView = inflater.inflate(R.layout.custom_listexecutor, null, true)
 
-        val trackText = rowView.findViewById(R.id.trackName) as TextView
-        val timeText = rowView.findViewById(R.id.timeTrack) as TextView
+        val executorName = rowView.findViewById(R.id.ExecutorName) as TextView
+        val countAlbomsToExecutor = rowView.findViewById(R.id.countAlbomsToExecutor) as TextView
+        var itrmloyaot =  rowView.findViewById(R.id.itemExecutor) as CardView
 
-        trackText.text = listTracks[position].getTrackName();
-        timeText.text =  listTracks[position].getTime();
 
+        var listAlboms = listExecutors[position].getItemsAlbomsToExecutor();
+
+
+        executorName.text = listExecutors[position].getExecutorName();
+        countAlbomsToExecutor.text = listAlboms.count().toString()
+
+        var db = dbHelper.writableDatabase
+
+        var x:Int = 0;
         var x_down:Float = 0F;
 
-        var itrmloyaot =  rowView.findViewById(R.id.itemTrack) as CardView
+
 
         var defaultColor = itrmloyaot.solidColor
 
@@ -42,8 +52,6 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
 
         var time:Long = 0;
 
-
-        var db = dbHelper.writableDatabase
 
 
         rowView.setOnTouchListener (object : View.OnTouchListener {
@@ -62,8 +70,11 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
                         flag_move = false;
                         flag_up = false;
 
+
+
                         x_down = event?.getX()
 
+                        Log.w("ACTION_DOWN", x_down.toString());
                     }
 
                     MotionEvent.ACTION_MOVE -> {
@@ -73,7 +84,7 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
 
                         if(deltaTime > deltaTimeConst) {
 
-                          //  event?.action = MotionEvent.ACTION_UP;
+                           // event?.action = MotionEvent.ACTION_UP;
                           //  return true
 
 
@@ -102,6 +113,11 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
                     MotionEvent.ACTION_UP -> {
                         flag_move = false;
                         flag_up = true;
+                        x = 0;
+
+
+                        //itrmloyaot.setPadding(0,0,0,0)
+
 
 
                         if(deltaTime < deltaTimeConst)
@@ -117,9 +133,11 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
                             flag_up = false;
 
 
-//                            v?.let {
-//                                Navigation.findNavController(it).navigate(R.id.action_end_dest_to_AddTrackFragment)
-//                            }
+                            v?.let {
+
+                                var bundle = bundleOf("executorItem" to listExecutors[position].getId().toString())
+                                Navigation.findNavController(it).navigate(R.id.action_artistListFragment_to_launcher_home, bundle)
+                            }
                         }
                         else
                         {
@@ -141,11 +159,24 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
                             builder.setPositiveButton("Да"){dialog, which ->
 
 
-                                db.execSQL("DELETE FROM 'link_albom_track' WHERE idTreack ='"+listTracks[position].getId()+"'")
-                                db.execSQL("DELETE FROM 'track' WHERE id ='"+listTracks[position].getId()+"'")
 
-                                listTracks.removeAt(position);
-                                listTrakName.removeAt(position);
+                                for (item in listAlboms)
+                                {
+                                    var listT = item.getAllTrack();
+
+                                    for (item in listT)
+                                    {
+                                        db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+                                    }
+
+                                    //Удалить альбом
+                                    db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+                                }
+
+                                db.execSQL("DELETE FROM 'executor' WHERE id ='"+listExecutors[position].getId()+"'")
+
+                                listTitle.removeAt(position);
+                                listExecutors.removeAt(position);
                                 notifyDataSetChanged();
 
 

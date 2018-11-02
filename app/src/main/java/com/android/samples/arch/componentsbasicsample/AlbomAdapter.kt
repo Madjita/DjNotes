@@ -34,7 +34,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
         titleText.text = listAlboms[position].getAlbomName();
        // imageView.setImageResource(listAlboms[position].getDirPng())
-        executerText.text =  listAlboms[position].getExecutor()
+      //  executerText.text =  listAlboms[position].getExecutor()
         yearText.text = listAlboms[position].getYear()
 
         var x:Int = 0;
@@ -53,40 +53,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
         var time:Long = 0;
 
 
-//        rowView.setOnClickListener {
-//
-//            if(flag_down && flag_up && (flag_move == false)) {
-//
-//                flag_down = false;
-//                flag_move = false;
-//                flag_up = false;
-//
-//                rowView?.let {
-//
-//                    var bundle = bundleOf("albomItem" to listAlboms[position].getId().toString())
-//                    Navigation.findNavController(it).navigate(R.id.end_action, bundle)
-//                }
-//
-//            }
-//
-//        }
-
-
-     //  val del_button =  rowView.findViewById(R.id.albom_del) as TextView;
-
         var db = dbHelper.writableDatabase
-
-
-//        del_button.setOnClickListener {
-//
-//            db.execSQL("DELETE FROM 'albom' WHERE id ='"+listAlboms[position].getId()+"'")
-//
-//            listTitle.removeAt(position);
-//            listAlboms.removeAt(position);
-//            this.notifyDataSetChanged();
-//
-//        }
-
 
 
 
@@ -118,10 +85,10 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
                         flag_move = true;
 
-                        if(deltaTime > 150) {
+                        if(deltaTime > deltaTimeConst) {
 
-                                event?.action = MotionEvent.ACTION_UP;
-                                return true
+                          //      event?.action = MotionEvent.ACTION_UP;
+                            //    return true
 
 
 //                            if((x_down-event?.getX()) > 200 )
@@ -156,11 +123,11 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
 
 
-                        if(deltaTime < 100)
+                        if(deltaTime < deltaTimeConst)
                         {
                             itrmloyaot.translationX = 0F;
 
-                            Toast.makeText(context, "Time: " + deltaTime.toString(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Time: " + deltaTime.toString(), Toast.LENGTH_SHORT).show();
 
                             v?.performClick()
 
@@ -177,7 +144,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                         }
                         else
                         {
-                            Toast.makeText(context,"Time: " + deltaTime.toString() + " LongTime", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context,"Time: " + deltaTime.toString() + " LongTime", Toast.LENGTH_SHORT).show();
 
                             // Change the app background color
                             itrmloyaot.setBackgroundColor(Color.RED)
@@ -194,6 +161,15 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                             // Set a positive button and its click listener on alert dialog
                             builder.setPositiveButton("Да"){dialog, which ->
 
+                                //Удалить все треки прикрепленные к этому альбому
+                                var listT = listAlboms[position].getAllTrack();
+
+                                for (item in listT)
+                                {
+                                    db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+                                }
+
+                                //Удалить альбом
                                 db.execSQL("DELETE FROM 'albom' WHERE id ='"+listAlboms[position].getId()+"'")
 
                                 listTitle.removeAt(position);

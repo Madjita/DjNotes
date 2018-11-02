@@ -41,6 +41,7 @@ class EndFragment : Fragment() {
         val id = arguments?.getString("albomItem")?.toInt();
 
 
+
         var db = dbHelper.writableDatabase
 
         var albom: Albom? = null;
@@ -52,12 +53,11 @@ class EndFragment : Fragment() {
             do {
                 val id = cursor.getInt(cursor.getColumnIndex("id"))
                 val albomName = cursor.getString(cursor.getColumnIndex("AlbomName"))
-                val executor = cursor.getString(cursor.getColumnIndex("Executor"))
                 val year = cursor.getString(cursor.getColumnIndex("Year"))
                 val dirPng = cursor.getString(cursor.getColumnIndex("DirPng"))
                 val teg = cursor.getString(cursor.getColumnIndex("Teg"))
 
-                albom = Albom(id,albomName,executor,year,dirPng,teg);
+                albom = Albom(id,albomName,year,dirPng,teg);
 
 
 

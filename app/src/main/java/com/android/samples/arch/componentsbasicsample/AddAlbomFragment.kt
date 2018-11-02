@@ -57,13 +57,12 @@ class AddAlbomFragment : Fragment() {
 
         var db = dbHelper.writableDatabase
 
-
+        val id = arguments?.getString("executorId")?.toInt();
 
         view?.findViewById<Button>(R.id.button)?.setOnClickListener {
 
 
            var albomName =  view?.findViewById<EditText>(R.id.editText_albom)?.text.toString();
-           var executer =  view?.findViewById<EditText>(R.id.editText_executor)?.text.toString();
             var year =  view?.findViewById<EditText>(R.id.editText_year)?.text.toString();
             var dirpng =  view?.findViewById<EditText>(R.id.editText_dirpng)?.text.toString();
             var teg =  view?.findViewById<EditText>(R.id.editText_teg)?.text.toString();
@@ -71,12 +70,25 @@ class AddAlbomFragment : Fragment() {
             var list: ArrayList<String>? = null;
 
             list?.add(albomName);
-            list?.add(executer);
             list?.add(year);
             list?.add(dirpng);
             list?.add(teg);
 
-            db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Executor', 'Year') VALUES ( '$albomName', '$executer','$year' )");
+            db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Year','DirPng','Teg') VALUES ( '$albomName','$year','$dirpng','$teg')");
+
+
+            var cursor = db.rawQuery("SELECT id FROM 'albom' WHERE AlbomName = '$albomName'", null);
+
+            if (cursor.moveToFirst()) {
+
+                do {
+                    val idAlbom = cursor.getInt(cursor.getColumnIndex("id"))
+                    db.execSQL("INSERT INTO 'link_executor_to_albom' ( 'idAlbom','idExecutor') VALUES ( '$idAlbom', '$id' )");
+
+                } while (cursor.moveToNext())
+            }
+
+
 
             //Закрытие клавиатуры
             val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

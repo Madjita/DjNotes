@@ -14,7 +14,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            app:startDestination="@+id/launcher_home">
+            app:startDestination="@+id/artistListFragment">
 
     <fragment android:id="@+id/launcher_home"
               android:label="Home"
@@ -30,6 +30,7 @@
         <argument
             android:name="albomItem"
             app:argType="reference" />
+        <argument android:name="executorId" />
 
 
     </fragment>
@@ -52,13 +53,32 @@
         android:id="@+id/addAlbomFragment"
         android:name="com.android.samples.arch.componentsbasicsample.AddAlbomFragment"
         android:label="fragment_add_albom"
-        tools:layout="@layout/fragment_add_albom" />
+        tools:layout="@layout/fragment_add_albom" ></fragment>
 
     <fragment
         android:id="@+id/AddTrackFragment"
         android:name="com.android.samples.arch.componentsbasicsample.AddTrackFragment"
         android:label="fragment_add_track"
         tools:layout="@layout/fragment_add_track" />
+
+    <fragment
+        android:id="@+id/artistListFragment"
+        android:name="com.android.samples.arch.componentsbasicsample.ArtistListFragment"
+        android:label="fragment_artist_list"
+        tools:layout="@layout/fragment_artist_list" >
+        <argument android:name="executorItem" />
+        <action
+            android:id="@+id/action_artistListFragment_to_launcher_home"
+            app:destination="@id/launcher_home" />
+        <action
+            android:id="@+id/action_artistListFragment_to_addExecutorFragment"
+            app:destination="@id/addExecutorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addExecutorFragment"
+        android:name="com.android.samples.arch.componentsbasicsample.AddExecutorFragment"
+        android:label="fragment_add_executor"
+        tools:layout="@layout/fragment_add_executor" />
 
 
 </navigation>

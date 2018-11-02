@@ -1,12 +1,13 @@
 package com.android.samples.arch.componentsbasicsample;
 
-class Albom(id: Int, albomName: String?, executor: String?, year: String?, dirPng: String?, teg: String?){
+import java.util.*
+
+class Albom(id: Int, albomName: String?,year: String?, dirPng: String?, teg: String?){
 
 
     public var  TABLE_NAME: String = "albom";
     public var COLUMN_ID: String = "id"; // Ид таблицы Альбом
     public var COLUMN_ALBOMNAME: String = "AlbomName"; // Название колонки Албома
-    public var COLUMN_EXECUTOR: String = "Executor"; // Название колонки Исполнителя
     public var COLUMN_YEAR: String = "Year"; // Название колонки Год
     public var COLUMN_DIRPNG: String= "DirPng"; // Название колонки Путь до картинки
     public var COLUMN_TEG: String = "Teg"; // Название колонки Тег
@@ -14,7 +15,6 @@ class Albom(id: Int, albomName: String?, executor: String?, year: String?, dirPn
 
     private var id:Int = 0;
     private var albomName:String ;
-    private var executor:String
     private var year:String ;
     private var  dirPng:String ;
     private var teg: String ;
@@ -23,7 +23,6 @@ class Albom(id: Int, albomName: String?, executor: String?, year: String?, dirPn
     init {
         this.id = id
         this.albomName = albomName.toString();
-        this.executor = executor.toString();
         this.year = year.toString();
         this.dirPng = dirPng.toString();
         this.teg = teg.toString();
@@ -35,7 +34,6 @@ class Albom(id: Int, albomName: String?, executor: String?, year: String?, dirPn
             "CREATE TABLE " + TABLE_NAME + "(" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_ALBOMNAME + " TEXT NOT NULL," +
-                    COLUMN_EXECUTOR + " TEXT NOT NULL," +
                     COLUMN_YEAR + " TEXT,"+
                     COLUMN_DIRPNG + " TEXT,"+
                     COLUMN_TEG + " TEXT" + ")";
@@ -61,17 +59,6 @@ class Albom(id: Int, albomName: String?, executor: String?, year: String?, dirPn
     public fun setAlbomName(albomName: String) {
         this.albomName = albomName;
     }
-
-    ///////////////////////////////////////
-
-    public fun getExecutor(): String {
-        return this.executor;
-    }
-
-    public fun setExecutor(executor: String) {
-        this.executor = executor;
-    }
-
 
     ///////////////////////////////////////
 
@@ -104,5 +91,38 @@ class Albom(id: Int, albomName: String?, executor: String?, year: String?, dirPn
     }
 
     ///////////////////////////////////////
+
+
+    public fun getAllTrack(): ArrayList<Track>
+    {
+
+        var db = dbHelper.writableDatabase
+
+        var listTracksItems = ArrayList<Track>();
+
+        var cursor = db.rawQuery("SELECT track.id, TrackName, Time,track.Teg FROM track "+
+                "JOIN link_albom_track ON link_albom_track.idTreack = track.Id "+
+                "JOIN  albom ON link_albom_track.idAlbom= albom.id "+
+                "WHERE albom.id = "+getId(), null);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                val id = cursor.getInt(cursor.getColumnIndex("id"))
+                val trackName = cursor.getString(cursor.getColumnIndex("TrackName"))
+                val time = cursor.getString(cursor.getColumnIndex("Time"))
+                val teg = cursor.getString(cursor.getColumnIndex("Teg"))
+
+                listTracksItems.add(Track(id,trackName,time,teg))
+
+
+            } while (cursor.moveToNext())
+        }
+
+        //перевернуть массив
+        Collections.reverse(listTracksItems)
+
+        return listTracksItems;
+    }
 
 }
