@@ -14,8 +14,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.navigation.Navigation
 import org.w3c.dom.Text
-import java.util.ArrayList
-import java.util.Observer
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
@@ -27,6 +25,7 @@ import java.net.URI
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Environment
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -95,7 +94,9 @@ class AddAlbomFragment : Fragment() {
            // list?.add(dirpng);
             list?.add(teg);
 
-            db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Year','DirPng','Teg') VALUES ( '$albomName','$year','$dirpng','$teg')");
+            val currentTime = Calendar.getInstance().getTimeInMillis()
+
+            db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Year','DirPng','Teg','Data') VALUES ( '$albomName','$year','$dirpng','$teg','$currentTime')");
 
 
             var cursor = db.rawQuery("SELECT id FROM 'albom' WHERE AlbomName = '$albomName'", null);

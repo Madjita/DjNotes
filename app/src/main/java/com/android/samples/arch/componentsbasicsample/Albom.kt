@@ -1,5 +1,6 @@
 package com.android.samples.arch.componentsbasicsample;
 
+import java.text.DateFormat
 import java.util.*
 
 class Albom(id: Int, albomName: String?,year: String?, dirPng: String?, teg: String?){
@@ -11,6 +12,7 @@ class Albom(id: Int, albomName: String?,year: String?, dirPng: String?, teg: Str
     public var COLUMN_YEAR: String = "Year"; // Название колонки Год
     public var COLUMN_DIRPNG: String= "DirPng"; // Название колонки Путь до картинки
     public var COLUMN_TEG: String = "Teg"; // Название колонки Тег
+    public var COLUMN_DATA: String = "Data"; // Название колонки Дата (в милисекундах)
 
 
     private var id:Int = 0;
@@ -18,6 +20,7 @@ class Albom(id: Int, albomName: String?,year: String?, dirPng: String?, teg: Str
     private var year:String ;
     private var  dirPng:String ;
     private var teg: String ;
+    private var data: Long = 0;
 
 
     init {
@@ -36,7 +39,8 @@ class Albom(id: Int, albomName: String?,year: String?, dirPng: String?, teg: Str
                     COLUMN_ALBOMNAME + " TEXT NOT NULL," +
                     COLUMN_YEAR + " TEXT,"+
                     COLUMN_DIRPNG + " TEXT,"+
-                    COLUMN_TEG + " TEXT" + ")";
+                    COLUMN_TEG + " TEXT," +
+                    COLUMN_DATA +" INTEGER " +")";
 
 
 
@@ -90,7 +94,23 @@ class Albom(id: Int, albomName: String?,year: String?, dirPng: String?, teg: Str
         this.teg = teg;
     }
 
+
     ///////////////////////////////////////
+
+    public fun getDataMillis(): Long {
+        return this.data;
+    }
+
+    public fun getDta(): String {
+        return DateFormat.getDateTimeInstance().format(Date(this.data))
+    }
+
+    public fun setDataMillis(data: Long) {
+        this.data = data;
+    }
+
+    ///////////////////////////////////////
+
 
 
     public fun getAllTrack(): ArrayList<Track>

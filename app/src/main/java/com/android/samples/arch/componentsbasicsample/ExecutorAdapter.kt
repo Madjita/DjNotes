@@ -5,17 +5,12 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.support.v7.widget.CardView
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
-import java.util.ArrayList
-
+import java.text.DateFormat
+import java.util.*
 
 
 class ExecutorAdapter(private val context: Activity, private val listExecutors: ArrayList<Executor>, private val listTitle: ArrayList<String>)
@@ -132,6 +127,12 @@ class ExecutorAdapter(private val context: Activity, private val listExecutors: 
                             flag_move = false;
                             flag_up = false;
 
+                           // val currentTime1 = Calendar.getInstance().getTime()
+                           // val currentTime = Calendar.getInstance().getTimeInMillis()
+                          // val currentTime2 = DateFormat.getDateTimeInstance().format(Date(currentTime))
+
+                            //Toast.makeText(context, "currentTime: " +currentTime1.toString() +" = " + currentTime2, Toast.LENGTH_SHORT).show();
+
 
                             v?.let {
 
@@ -141,70 +142,123 @@ class ExecutorAdapter(private val context: Activity, private val listExecutors: 
                         }
                         else
                         {
-                            //Toast.makeText(context,"Time: " + deltaTime.toString() + " LongTime", Toast.LENGTH_SHORT).show();
+
+
+
+
 
                             // Change the app background color
-                            itrmloyaot.setBackgroundColor(Color.RED)
-
-                            // Initialize a new instance of
-                            val builder = AlertDialog.Builder(context)
-
-                            // Set the alert dialog title
-                            builder.setTitle("Удаление")
-
-                            // Display a message on alert dialog
-                            builder.setMessage("Удалить элемент?")
-
-                            // Set a positive button and its click listener on alert dialog
-                            builder.setPositiveButton("Да"){dialog, which ->
+                            itrmloyaot.setBackgroundColor(Color.parseColor( "#33FF66"))
 
 
+                            val popup = PopupMenu(context, countAlbomsToExecutor)
+                            popup.menu.add(Menu.NONE, 0, Menu.NONE, "Редактировать")
+                            popup.menu.add(Menu.NONE, 1, Menu.NONE, "Удалить")
+                            popup.show()
+                            popup.setOnDismissListener(PopupMenu.OnDismissListener {
 
-                                for (item in listAlboms)
-                                {
-                                    var listT = item.getAllTrack();
+                                itrmloyaot.setBackgroundColor(defaultColor)
 
-                                    for (item in listT)
-                                    {
-                                        db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
-                                    }
+                            });
 
-                                    //Удалить альбом
-                                    db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+                            popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+                                override fun onMenuItemClick(menuItem: MenuItem): Boolean {
+
+
+                                    when (menuItem.getItemId()) {
+                                        0 -> {
+
+                                            itrmloyaot.setBackgroundColor(defaultColor)
+
+                                            v?.let {
+                                                var bundle = bundleOf("executorItem" to listExecutors[position].getId().toString())
+                                                Navigation.findNavController(it).navigate(R.id.editExecutorFragment_action,bundle)
+                                            }
+
+
+                                        }
+                                        1 -> {
+                                            // Change the app background color
+                                            itrmloyaot.setBackgroundColor(Color.RED)
+
+                                            // Initialize a new instance of
+                                            val builder = AlertDialog.Builder(context)
+
+                                            // Set the alert dialog title
+                                            builder.setTitle("Удаление")
+
+                                            // Display a message on alert dialog
+                                            builder.setMessage("Удалить элемент?")
+
+                                            // Set a positive button and its click listener on alert dialog
+                                            builder.setPositiveButton("Да"){dialog, which ->
+
+
+
+                                                for (item in listAlboms)
+                                                {
+                                                    var listT = item.getAllTrack();
+
+                                                    for (item in listT)
+                                                    {
+                                                        db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+                                                    }
+
+                                                    //Удалить альбом
+                                                    db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+                                                }
+
+                                                db.execSQL("DELETE FROM 'executor' WHERE id ='"+listExecutors[position].getId()+"'")
+
+                                                listTitle.removeAt(position);
+                                                listExecutors.removeAt(position);
+                                                notifyDataSetChanged();
+
+
+                                            }
+
+
+                                            // Display a negative button on alert dialog
+                                            builder.setNegativeButton("Нет"){dialog,which ->
+
+                                                // Change the app background color
+                                                itrmloyaot.setBackgroundColor(defaultColor)
+
+                                            }
+
+
+                                            // Display a neutral button on alert dialog
+                                            builder.setNeutralButton("Отмена"){_,_ ->
+
+                                                // Change the app background color
+                                                itrmloyaot.setBackgroundColor(defaultColor)
+
+                                            }
+
+                                            // Finally, make the alert dialog using builder
+                                            val dialog: AlertDialog = builder.create()
+
+                                            // Display the alert dialog on app interface
+                                            dialog.show()
+
+                                        }
+                                    }//code
+                                    return true
                                 }
 
-                                db.execSQL("DELETE FROM 'executor' WHERE id ='"+listExecutors[position].getId()+"'")
 
-                                listTitle.removeAt(position);
-                                listExecutors.removeAt(position);
-                                notifyDataSetChanged();
+                            })
 
 
-                            }
 
 
-                            // Display a negative button on alert dialog
-                            builder.setNegativeButton("Нет"){dialog,which ->
-
-                                // Change the app background color
-                                itrmloyaot.setBackgroundColor(defaultColor)
-
-                            }
 
 
-                            // Display a neutral button on alert dialog
-                            builder.setNeutralButton("Отмена"){_,_ ->
+                            ///////////////////////////////////////////
 
-                                // Change the app background color
-                                itrmloyaot.setBackgroundColor(defaultColor)
 
-                            }
 
-                            // Finally, make the alert dialog using builder
-                            val dialog: AlertDialog = builder.create()
 
-                            // Display the alert dialog on app interface
-                            dialog.show()
 
                         }
 
@@ -231,6 +285,8 @@ class ExecutorAdapter(private val context: Activity, private val listExecutors: 
 
         return rowView
     }
+
+
 
 
 }

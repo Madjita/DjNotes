@@ -11,7 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import androidx.navigation.Navigation
-import java.util.ArrayList
+import java.util.*
 
 
 class AddExecutorFragment : Fragment() {
@@ -47,7 +47,9 @@ class AddExecutorFragment : Fragment() {
             list?.add(executer);
             list?.add(teg);
 
-            db.execSQL("INSERT INTO 'executor' ( 'ExecutorName', 'Teg') VALUES ( '$executer','$teg')");
+            val currentTime = Calendar.getInstance().getTimeInMillis()
+
+            db.execSQL("INSERT INTO 'executor' ( 'ExecutorName', 'Teg','Data') VALUES ( '$executer','$teg','$currentTime')");
 
             //Закрытие клавиатуры
             val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

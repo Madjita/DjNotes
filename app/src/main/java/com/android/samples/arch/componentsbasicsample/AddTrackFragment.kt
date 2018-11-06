@@ -11,7 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import androidx.navigation.Navigation
-import java.util.ArrayList
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -62,7 +62,9 @@ class AddTrackFragment : Fragment() {
             list?.add(timeTrack);
             list?.add(teg);
 
-            db.execSQL("INSERT INTO 'track' ( 'TrackName', 'Time','Teg') VALUES ( '$trackName', '$timeTrack','$teg' )");
+            val currentTime = Calendar.getInstance().getTimeInMillis()
+
+            db.execSQL("INSERT INTO 'track' ( 'TrackName', 'Time','Teg','Data') VALUES ( '$trackName', '$timeTrack','$teg','$currentTime')");
 
 
             var cursor = db.rawQuery("SELECT * FROM 'track' WHERE TrackName = '$trackName'", null);

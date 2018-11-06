@@ -3,15 +3,13 @@ package com.android.samples.arch.componentsbasicsample
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Fragment
+import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Handler
 import android.support.v7.widget.CardView
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
 import android.widget.*
 import androidx.navigation.Navigation
@@ -27,6 +25,7 @@ import android.graphics.Bitmap
 import android.net.Uri.parse
 import android.os.Environment
 import android.support.v4.provider.DocumentFile
+import android.view.*
 import org.jetbrains.anko.Android
 import java.net.URI
 import java.nio.file.Files.exists
@@ -187,61 +186,88 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                             //Toast.makeText(context,"Time: " + deltaTime.toString() + " LongTime", Toast.LENGTH_SHORT).show();
 
                             // Change the app background color
-                            itrmloyaot.setBackgroundColor(Color.RED)
+                            itrmloyaot.setBackgroundColor(Color.parseColor( "#33FF66"))
 
-                            // Initialize a new instance of
-                            val builder = AlertDialog.Builder(context)
 
-                            // Set the alert dialog title
-                            builder.setTitle("Удаление")
+                            val popup = PopupMenu(context, imageView)
+                            popup.menu.add(Menu.NONE, 0, Menu.NONE, "Редактировать")
+                            popup.menu.add(Menu.NONE, 1, Menu.NONE, "Удалить")
+                            popup.show()
+                            popup.setOnDismissListener(PopupMenu.OnDismissListener {
 
-                            // Display a message on alert dialog
-                            builder.setMessage("Удалить элемент?")
+                                itrmloyaot.setBackgroundColor(defaultColor)
 
-                            // Set a positive button and its click listener on alert dialog
-                            builder.setPositiveButton("Да"){dialog, which ->
+                            });
 
-                                //Удалить все треки прикрепленные к этому альбому
-                                var listT = listAlboms[position].getAllTrack();
+                            popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+                               override fun onMenuItemClick(menuItem: MenuItem): Boolean {
 
-                                for (item in listT)
-                                {
-                                    db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+
+                                    when (menuItem.getItemId()) {
+                                        0 -> {
+
+                                            itrmloyaot.setBackgroundColor(defaultColor)
+
+                                            v?.let {
+                                                var bundle = bundleOf("albomItem" to listAlboms[position].getId().toString())
+                                                Navigation.findNavController(it).navigate(R.id.editAlbomFragment_action,bundle)
+                                            }
+
+
+                                        }
+                                        1 -> {
+                                                // Initialize a new instance of
+                                                val builder = AlertDialog.Builder(context)
+                                                // Set the alert dialog title
+                                                builder.setTitle("Удаление")
+                                                // Display a message on alert dialog
+                                                builder.setMessage("Удалить элемент?")
+                                                // Set a positive button and its click listener on alert dialog
+                                                builder.setPositiveButton("Да"){dialog, which ->
+                                                //Удалить все треки прикрепленные к этому альбому
+                                                var listT = listAlboms[position].getAllTrack();
+
+                                                for (item in listT)
+                                                {
+                                                    db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
+                                                }
+
+                                                //Удалить альбом
+                                                db.execSQL("DELETE FROM 'albom' WHERE id ='"+listAlboms[position].getId()+"'")
+
+                                                listTitle.removeAt(position);
+                                                listAlboms.removeAt(position);
+                                                notifyDataSetChanged();
+
+
+                                                }
+
+
+                                                // Display a negative button on alert dialog
+                                                builder.setNegativeButton("Нет"){dialog,which ->
+                                                    // Change the app background color
+                                                    itrmloyaot.setBackgroundColor(defaultColor)
+                                                }
+
+
+                                                // Display a neutral button on alert dialog
+                                                builder.setNeutralButton("Отмена"){_,_ ->
+                                                    // Change the app background color
+                                                    itrmloyaot.setBackgroundColor(defaultColor)
+                                                }
+                                                // Finally, make the alert dialog using builder
+                                                val dialog: AlertDialog = builder.create()
+                                                // Display the alert dialog on app interface
+                                                dialog.show()
+
+                                        }
+                                    }//code
+                                    return true
                                 }
 
-                                //Удалить альбом
-                                db.execSQL("DELETE FROM 'albom' WHERE id ='"+listAlboms[position].getId()+"'")
 
-                                listTitle.removeAt(position);
-                                listAlboms.removeAt(position);
-                                notifyDataSetChanged();
+                            })
 
-
-                            }
-
-
-                            // Display a negative button on alert dialog
-                            builder.setNegativeButton("Нет"){dialog,which ->
-
-                                // Change the app background color
-                                itrmloyaot.setBackgroundColor(defaultColor)
-
-                            }
-
-
-                            // Display a neutral button on alert dialog
-                            builder.setNeutralButton("Отмена"){_,_ ->
-
-                                // Change the app background color
-                                itrmloyaot.setBackgroundColor(defaultColor)
-
-                            }
-
-                            // Finally, make the alert dialog using builder
-                            val dialog: AlertDialog = builder.create()
-
-                            // Display the alert dialog on app interface
-                            dialog.show()
 
                         }
 

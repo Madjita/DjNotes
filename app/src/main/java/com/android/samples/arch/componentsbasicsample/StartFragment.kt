@@ -9,15 +9,11 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.navigation.Navigation
 
-import android.widget.ArrayAdapter;
 import kotlin.properties.Delegates
 
-import android.widget.Toast
 import org.jetbrains.anko.bundleOf
 import java.util.*
 
@@ -58,8 +54,10 @@ class StartFragment : Fragment() {
                 val id = cursor.getInt(cursor.getColumnIndex("id"))
                 val executorName = cursor.getString(cursor.getColumnIndex("ExecutorName"))
                 val teg = cursor.getString(cursor.getColumnIndex("Teg"))
+                val currentTime = cursor.getLong(cursor.getColumnIndex("Data"))
 
                 executorItem = Executor(id,executorName,teg)
+                executorItem.setDataMillis(currentTime)
 
             } while (cursor.moveToNext())
         }

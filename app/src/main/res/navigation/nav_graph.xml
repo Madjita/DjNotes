@@ -22,15 +22,20 @@
                 tools:layout="@layout/fragment_start">
 
         <action android:id="@+id/end_action" app:destination="@id/end_dest"/>
+
         <action
             android:id="@+id/addAlbomFragment_action"
             app:destination="@id/addAlbomFragment" />
 
+        <action
+            android:id="@+id/editAlbomFragment_action"
+            app:destination="@id/editAlbomFragment" />
 
-        <argument
-            android:name="albomItem"
-            app:argType="reference" />
+        <argument android:name="albomItem" />
+
         <argument android:name="executorId" />
+
+
 
 
     </fragment>
@@ -43,7 +48,14 @@
         <action
             android:id="@+id/action_end_dest_to_AddTrackFragment"
             app:destination="@id/AddTrackFragment" />
+
         <argument android:name="albomId" />
+        <argument android:name="trackId" />
+
+
+        <action
+            android:id="@+id/editTrackFragment_action"
+            app:destination="@id/edittrackFragment" />
 
 
 
@@ -73,12 +85,30 @@
         <action
             android:id="@+id/action_artistListFragment_to_addExecutorFragment"
             app:destination="@id/addExecutorFragment" />
+        <action
+            android:id="@+id/editExecutorFragment_action"
+            app:destination="@id/editExecutorFragment" />
     </fragment>
     <fragment
         android:id="@+id/addExecutorFragment"
         android:name="com.android.samples.arch.componentsbasicsample.AddExecutorFragment"
         android:label="fragment_add_executor"
         tools:layout="@layout/fragment_add_executor" />
+    <fragment
+        android:id="@+id/editAlbomFragment"
+        android:name="com.android.samples.arch.componentsbasicsample.EditAlbomFragment"
+        android:label="fragment_edit_albom"
+        tools:layout="@layout/fragment_edit_albom" />
+    <fragment
+        android:id="@+id/editExecutorFragment"
+        android:name="com.android.samples.arch.componentsbasicsample.EditExecutorFragment"
+        android:label="fragment_edit_executor"
+        tools:layout="@layout/fragment_edit_executor" />
+    <fragment
+        android:id="@+id/edittrackFragment"
+        android:name="com.android.samples.arch.componentsbasicsample.EditTrackFragment"
+        android:label="fragment_edittrack"
+        tools:layout="@layout/fragment_edittrack" />
 
 
 </navigation>

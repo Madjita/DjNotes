@@ -4,6 +4,8 @@ import android.app.Activity
 import java.util.*
 import kotlin.collections.ArrayList
 
+import java.text.DateFormat
+
 class Executor(id: Int, executorName: String?, teg: String?){
 
 
@@ -11,11 +13,13 @@ class Executor(id: Int, executorName: String?, teg: String?){
     public var COLUMN_ID: String = "id"; // Ид таблицы Альбом
     public var COLUMN_EXECUTOR: String = "ExecutorName"; // Название колонки Исполнителя
     public var COLUMN_TEG: String = "Teg"; // Название колонки Тег
+    public var COLUMN_DATA: String = "Data"; // Название колонки Дата (в милисекундах)
 
 
     private var id:Int = 0;
     private var executorName:String
     private var teg: String ;
+    private var data: Long = 0;
 
 
     init {
@@ -30,7 +34,8 @@ class Executor(id: Int, executorName: String?, teg: String?){
             "CREATE TABLE " + TABLE_NAME + "(" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_EXECUTOR + " TEXT NOT NULL," +
-                    COLUMN_TEG + " TEXT" + ")";
+                    COLUMN_TEG + " TEXT," +
+                    COLUMN_DATA +" INTEGER " +")";
 
     /////////////////////////
 
@@ -60,6 +65,20 @@ class Executor(id: Int, executorName: String?, teg: String?){
 
     public fun setTeg(teg: String) {
         this.teg = teg;
+    }
+
+    ///////////////////////////////////////
+
+    public fun getDataMillis(): Long {
+        return this.data;
+    }
+
+    public fun getDta(): String {
+        return DateFormat.getDateTimeInstance().format(Date(this.data))
+    }
+
+    public fun setDataMillis(data: Long) {
+        this.data = data;
     }
 
     ///////////////////////////////////////

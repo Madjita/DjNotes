@@ -6,13 +6,8 @@ import android.graphics.Color
 import android.net.Uri
 import android.support.v7.widget.CardView
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 
@@ -125,57 +120,101 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
                         }
                         else
                         {
-                            //Toast.makeText(context,"Time: " + deltaTime.toString() + " LongTime", Toast.LENGTH_SHORT).show();
 
-                            // Change the app background color
-                            itrmloyaot.setBackgroundColor(Color.RED)
+                            itrmloyaot.setBackgroundColor(Color.parseColor( "#33FF66"))
 
-                            // Initialize a new instance of
-                            val builder = AlertDialog.Builder(context)
+                            val popup = PopupMenu(context, timeText)
+                            popup.menu.add(Menu.NONE, 0, Menu.NONE, "Редактировать")
+                            popup.menu.add(Menu.NONE, 1, Menu.NONE, "Удалить")
+                            popup.show()
+                            popup.setOnDismissListener(PopupMenu.OnDismissListener {
 
-                            // Set the alert dialog title
-                            builder.setTitle("Удаление")
-
-                            // Display a message on alert dialog
-                            builder.setMessage("Удалить элемент?")
-
-                            // Set a positive button and its click listener on alert dialog
-                            builder.setPositiveButton("Да"){dialog, which ->
-
-
-                                db.execSQL("DELETE FROM 'link_albom_track' WHERE idTreack ='"+listTracks[position].getId()+"'")
-                                db.execSQL("DELETE FROM 'track' WHERE id ='"+listTracks[position].getId()+"'")
-
-                                listTracks.removeAt(position);
-                                listTrakName.removeAt(position);
-                                notifyDataSetChanged();
-
-
-                            }
-
-
-                            // Display a negative button on alert dialog
-                            builder.setNegativeButton("Нет"){dialog,which ->
-
-                                // Change the app background color
                                 itrmloyaot.setBackgroundColor(defaultColor)
 
-                            }
+                            });
+
+                            popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+                                override fun onMenuItemClick(menuItem: MenuItem): Boolean {
 
 
-                            // Display a neutral button on alert dialog
-                            builder.setNeutralButton("Отмена"){_,_ ->
+                                    when (menuItem.getItemId()) {
+                                        0 -> {
 
-                                // Change the app background color
-                                itrmloyaot.setBackgroundColor(defaultColor)
+                                            itrmloyaot.setBackgroundColor(defaultColor)
 
-                            }
+                                            v?.let {
+                                                var bundle = bundleOf("trackId" to listTracks[position].getId().toString())
+                                                Navigation.findNavController(it).navigate(R.id.editTrackFragment_action,bundle)
+                                            }
 
-                            // Finally, make the alert dialog using builder
-                            val dialog: AlertDialog = builder.create()
 
-                            // Display the alert dialog on app interface
-                            dialog.show()
+                                        }
+                                        1 -> {
+                                            // Change the app background color
+                                            itrmloyaot.setBackgroundColor(Color.RED)
+
+                                            // Initialize a new instance of
+                                            val builder = AlertDialog.Builder(context)
+
+                                            // Set the alert dialog title
+                                            builder.setTitle("Удаление")
+
+                                            // Display a message on alert dialog
+                                            builder.setMessage("Удалить элемент?")
+
+                                            // Set a positive button and its click listener on alert dialog
+                                            builder.setPositiveButton("Да"){dialog, which ->
+
+
+                                                db.execSQL("DELETE FROM 'link_albom_track' WHERE idTreack ='"+listTracks[position].getId()+"'")
+                                                db.execSQL("DELETE FROM 'track' WHERE id ='"+listTracks[position].getId()+"'")
+
+                                                listTracks.removeAt(position);
+                                                listTrakName.removeAt(position);
+                                                notifyDataSetChanged();
+
+
+                                            }
+
+
+                                            // Display a negative button on alert dialog
+                                            builder.setNegativeButton("Нет"){dialog,which ->
+
+                                                // Change the app background color
+                                                itrmloyaot.setBackgroundColor(defaultColor)
+
+                                            }
+
+
+                                            // Display a neutral button on alert dialog
+                                            builder.setNeutralButton("Отмена"){_,_ ->
+
+                                                // Change the app background color
+                                                itrmloyaot.setBackgroundColor(defaultColor)
+
+                                            }
+
+                                            // Finally, make the alert dialog using builder
+                                            val dialog: AlertDialog = builder.create()
+
+                                            // Display the alert dialog on app interface
+                                            dialog.show()
+
+                                        }
+                                    }//code
+                                    return true
+                                }
+
+
+                            })
+
+
+
+
+
+                            //////////////////
+
+
 
                         }
 

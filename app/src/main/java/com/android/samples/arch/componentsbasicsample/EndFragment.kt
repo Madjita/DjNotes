@@ -59,9 +59,10 @@ class EndFragment : Fragment() {
                 val year = cursor.getString(cursor.getColumnIndex("Year"))
                 val dirPng = cursor.getString(cursor.getColumnIndex("DirPng"))
                 val teg = cursor.getString(cursor.getColumnIndex("Teg"))
+                val currentTime = cursor.getLong(cursor.getColumnIndex("Data"))
 
                 albom = Albom(id,albomName,year,dirPng,teg);
-
+                albom.setDataMillis(currentTime)
 
 
             } while (cursor.moveToNext())
@@ -92,7 +93,7 @@ class EndFragment : Fragment() {
 
        // cursor = db.rawQuery("SELECT * FROM 'track'", null);
 
-        var zapros = "SELECT track.id,TrackName,Time,track.Teg FROM 'track' " +
+        var zapros = "SELECT track.id,TrackName,Time,track.Teg,track.Data FROM 'track' " +
                 "JOIN link_albom_track ON link_albom_track.idTreack = track.id " +
                 "JOIN  albom ON link_albom_track.idAlbom = albom.id "+
                 "WHERE albom.id = '"+id+"'";
@@ -106,9 +107,11 @@ class EndFragment : Fragment() {
                 val trackName = cursor.getString(cursor.getColumnIndex("TrackName"))
                 val time = cursor.getString(cursor.getColumnIndex("Time"))
                 val teg = cursor.getString(cursor.getColumnIndex("Teg"))
+                val currentTime = cursor.getLong(cursor.getColumnIndex("Data"))
 
                 listTracks.add(trackName)
                 listTrackItems.add(Track(id,trackName,time,teg))
+                listTrackItems.last().setDataMillis(currentTime)
 
             } while (cursor.moveToNext())
         }

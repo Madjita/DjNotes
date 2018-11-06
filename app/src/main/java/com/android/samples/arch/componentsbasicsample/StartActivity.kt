@@ -100,21 +100,21 @@ class StartActivity : AppCompatActivity() {
                     ")");
 
             var x = 0
-            while (x < 3) {
+            while (x < 1000) {
                 x++
                 db.execSQL("INSERT INTO '"+executor.TABLE_NAME+"' ( 'ExecutorName', 'Teg') VALUES ( 'Executor $x', 'Teg $x' )");
 
             }
 
             x = 0;
-            while (x < 3) {
+            while (x < 1000) {
                 x++
                 db.execSQL("INSERT INTO '"+albom.TABLE_NAME+"' ( 'AlbomName', 'Year') VALUES ( 'Albom $x', '$x' )");
 
             }
             x = 0;
 
-            while (x < 3) {
+            while (x < 1000) {
                 x++
                 db.execSQL("INSERT INTO '"+track.TABLE_NAME+"' ( 'TrackName', 'Time') VALUES ( 'TrackName $x', '$x:$x' )");
 

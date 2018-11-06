@@ -6,16 +6,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ListView
 import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 import java.util.*
+import android.R.menu
+import android.view.MenuInflater
+import android.support.v4.view.MenuItemCompat
+import android.widget.*
+import android.support.v4.view.MenuItemCompat.expandActionView
+import android.support.v7.app.AppCompatActivity
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -49,12 +51,16 @@ class ArtistListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
 
+      //  var tollBar = view?.findViewById(R.id.toolbarArtist) as android.support.v7.widget.Toolbar
+
+       // (activity as AppCompatActivity).setSupportActionBar(tollBar)
+
         var db = dbHelper.writableDatabase
 
         var listExecutors = ArrayList<String>();
         var listExecutorsItems = ArrayList<Executor>();
 
-        var cursor = db.rawQuery("SELECT * FROM executor", null);
+        var cursor = db.rawQuery("SELECT * FROM executor ", null); //LIMIT 4 OFFSET 4
 
         if (cursor.moveToFirst()) {
 
@@ -62,9 +68,13 @@ class ArtistListFragment : Fragment() {
                 val id = cursor.getInt(cursor.getColumnIndex("id"))
                 val executorName = cursor.getString(cursor.getColumnIndex("ExecutorName"))
                 val teg = cursor.getString(cursor.getColumnIndex("Teg"))
+                val currentTime = cursor.getLong(cursor.getColumnIndex("Data"))
 
                 listExecutors.add(executorName)
                 listExecutorsItems.add(Executor(id,executorName,teg))
+                listExecutorsItems.last().setDataMillis(currentTime);
+
+               // val lol = listExecutorsItems.last().getDta();
 
 
             } while (cursor.moveToNext())
@@ -78,7 +88,10 @@ class ArtistListFragment : Fragment() {
 
 
         var listView = view?.findViewById<ListView>(R.id.listArtist)
+
         listView?.adapter = myListAdapter
+
+
 
         view?.findViewById<FloatingActionButton>(R.id.addArtist_bt)?.setOnClickListener {
             // Navigate to the login destination
@@ -88,4 +101,41 @@ class ArtistListFragment : Fragment() {
         }
 
     }
+
+//addExecutorFragment
+//    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+//
+//        inflater?.inflate(R.menu.menu,menu);
+//
+//        val searchItem = menu?.findItem(R.id.action_search)
+//
+//        val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                // perform query here
+//
+//                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+//                // see https://code.google.com/p/android/issues/detail?id=24599
+//                searchView.clearFocus()
+//
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(newText: String): Boolean {
+//                return false
+//            }
+//        })
+//
+//
+//        // Expand the search view and request focus
+//        searchItem?.expandActionView()
+//        searchView.requestFocus()
+//
+//
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
 }
+
+
+
+
