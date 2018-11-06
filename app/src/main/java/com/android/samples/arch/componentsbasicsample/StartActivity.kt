@@ -1,20 +1,38 @@
 package com.android.samples.arch.componentsbasicsample
 
+import android.Manifest
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlin.properties.Delegates
 import android.util.Log
+import android.Manifest.permission
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.support.v4.app.ActivityCompat
+import android.content.pm.PackageManager
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
+
+
 
 
 var dbHelper: MyDatabaseHelper by Delegates.notNull()
 
 var deltaTimeConst: Int = 200;
 
+private val RECORD_REQUEST_CODE = 101
+private val TAG = "Error"
+
+
 class StartActivity : AppCompatActivity() {
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+
+        setupPermissions()
 
         dbHelper = MyDatabaseHelper(this)
         var db = dbHelper.writableDatabase
@@ -141,5 +159,82 @@ class StartActivity : AppCompatActivity() {
 
 
     }
+
+
+    private fun setupPermissions() {
+
+
+
+
+        val permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+
+//        if (permission != PackageManager.PERMISSION_GRANTED) {
+//            Log.i(TAG, "Permission to record denied")
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                            Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//                val builder = AlertDialog.Builder(this)
+//                builder.setMessage("Permission to access the microphone is required store.")
+//                        .setTitle("Permission required")
+//
+//                builder.setPositiveButton("OK"
+//                ) { dialog, id ->
+//                    Log.i(TAG, "Clicked")
+//                    makeRequest()
+//                }
+//
+//                val dialog = builder.create()
+//                dialog.show()
+//            } else {
+//                makeRequest()
+//            }
+//        }
+
+        makeRequest()
+
+
+    }
+
+
+    private fun makeRequest() {
+        ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                RECORD_REQUEST_CODE)
+    }
+
+
+
+
+        override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+            when (requestCode) {
+                RECORD_REQUEST_CODE -> {
+
+                    if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+
+                        val builder = AlertDialog.Builder(this)
+                        builder.setMessage("Для работы приложения нужно разрешение \"Память\".")
+                                .setTitle("Ошибка.")
+
+                        builder.setPositiveButton("OK"
+                        ) { dialog, id ->
+                            Log.i(TAG, "Clicked")
+                            makeRequest()
+                        }
+
+                        val dialog = builder.create()
+                        dialog.show()
+
+
+                    } else {
+
+                        Log.i(TAG, "Пользователь дал разрешение")
+
+                    }
+                }
+            }
+        }
+
+
+
 
 }

@@ -55,10 +55,23 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
         if(path != "null")
         {
-            imageView.setImageURI(null);
-            imageView.setImageURI(uri); //Uri.parse(path)
 
-           // Uri.fromFile( File(imageView));
+            imageView.setImageURI(null);
+            imageView.setImageURI(uri);
+
+
+//
+//            val imgFile = File(path)
+//
+//            if (imgFile.exists()) {
+//
+//
+//                val myBitmap = BitmapFactory.decodeFile(path)
+//                imageView.setImageBitmap(myBitmap)
+//
+//
+//            }
+
 
         }
 

@@ -25,8 +25,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.URI
 import android.graphics.BitmapFactory
-
-
+import android.graphics.drawable.Drawable
+import android.os.Environment
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -47,6 +47,7 @@ class AddAlbomFragment : Fragment() {
 
     private lateinit var viewModel: EndViewModel
 
+    private lateinit var dirpng: String
 
     companion object {
         fun newInstance() = StartFragment()
@@ -66,6 +67,8 @@ class AddAlbomFragment : Fragment() {
 
         val id = arguments?.getString("executorId")?.toInt();
 
+        dirpng = "null";
+
 
         view?.findViewById<Button>(R.id.find)?.setOnClickListener {
 
@@ -82,14 +85,8 @@ class AddAlbomFragment : Fragment() {
 
            var albomName =  view?.findViewById<EditText>(R.id.editText_albom)?.text.toString();
             var year =  view?.findViewById<EditText>(R.id.editText_year)?.text.toString();
-           var dirpng =  view?.findViewById<EditText>(R.id.editText_dirpng)?.text.toString();
             var teg =  view?.findViewById<EditText>(R.id.editText_teg)?.text.toString();
 
-
-            if(dirpng == null)
-            {
-                dirpng = "null";
-            }
 
             var list: ArrayList<String>? = null;
 
@@ -138,18 +135,12 @@ class AddAlbomFragment : Fragment() {
 
             val selectedFile = data?.data!!//The uri with the location of the file
 
-            img?.setImageURI(selectedFile);
+           img?.setImageURI(selectedFile);
 
 
             var path = getPath(selectedFile);
 
-
-//            var imageStream = this.context.outputStream().use.openInputStream(selectedFile);
-//            var selectedImage = BitmapFactory.decodeStream(imageStream);
-//            img?.setImageBitmap(selectedImage);
-
-
-            view?.findViewById<EditText>(R.id.editText_dirpng)?.setText(selectedFile.toString());
+            dirpng = path!!;
 
             img?.visibility = View.VISIBLE;
         }
