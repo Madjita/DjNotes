@@ -64,6 +64,10 @@ class EditExecutorFragment : Fragment() {
             executorName_current?.text = executor.getExecutorName();
             teg_current?.text = executor.getTeg();
 
+
+            view?.findViewById<EditText>(R.id.editText_executor)?.setText(executor.getExecutorName())
+            view?.findViewById<EditText>(R.id.editText_teg)?.setText(executor.getTeg())
+
         };
 
 

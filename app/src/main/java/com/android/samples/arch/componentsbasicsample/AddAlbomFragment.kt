@@ -71,11 +71,11 @@ class AddAlbomFragment : Fragment() {
 
         view?.findViewById<Button>(R.id.find)?.setOnClickListener {
 
-            val intent = Intent(Intent.ACTION_SEND)
-                    .setType("image/*")//*/*
-                    .setAction(Intent.ACTION_GET_CONTENT)
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_PICK
 
-            startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 100)
 
         }
 
@@ -129,21 +129,30 @@ class AddAlbomFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 111 && resultCode == RESULT_OK) {
+        if (requestCode == 100 && resultCode == RESULT_OK) {
 
             var img = view?.findViewById<ImageView>(R.id.img);
 
 
             val selectedFile = data?.data!!//The uri with the location of the file
 
-           img?.setImageURI(selectedFile);
+            img?.setImageURI(selectedFile);
+            img?.visibility = View.VISIBLE;
 
 
             var path = getPath(selectedFile);
 
-            dirpng = path!!;
 
-            img?.visibility = View.VISIBLE;
+            if(path == null)
+            {
+                dirpng = selectedFile.toString()
+            }
+            else
+            {
+                dirpng = path!!;
+            }
+
+
         }
     }
 

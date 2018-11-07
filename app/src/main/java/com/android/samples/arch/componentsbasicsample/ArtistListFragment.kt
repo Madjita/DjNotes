@@ -13,11 +13,15 @@ import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 import java.util.*
 import android.R.menu
+import android.content.Intent
 import android.view.MenuInflater
 import android.support.v4.view.MenuItemCompat
 import android.widget.*
 import android.support.v4.view.MenuItemCompat.expandActionView
 import android.support.v7.app.AppCompatActivity
+import android.support.v4.view.MenuItemCompat.getActionView
+
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +40,8 @@ private const val ARG_PARAM2 = "param2"
  */
 class ArtistListFragment : Fragment() {
 
+    private var myListAdapter: ExecutorAdapter? = null;
+
     companion object {
         fun newInstance() = StartFragment()
     }
@@ -44,16 +50,23 @@ class ArtistListFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
 
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_artist_list, container, false)
     }
+
+
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
 
-      //  var tollBar = view?.findViewById(R.id.toolbarArtist) as android.support.v7.widget.Toolbar
+        var tollBar = view?.findViewById(R.id.toolbarArtist) as android.support.v7.widget.Toolbar
 
-       // (activity as AppCompatActivity).setSupportActionBar(tollBar)
+        tollBar.title = "Исполнители"
+
+
+        (activity as AppCompatActivity).setSupportActionBar(tollBar)
 
         var db = dbHelper.writableDatabase
 
@@ -81,10 +94,10 @@ class ArtistListFragment : Fragment() {
         }
 
         //перевернуть массив
-        Collections.reverse(listExecutors)
-        Collections.reverse(listExecutorsItems)
+       // Collections.reverse(listExecutors)
+       // Collections.reverse(listExecutorsItems)
 
-        val myListAdapter = ExecutorAdapter(this.context as Activity,listExecutorsItems,listExecutors)
+        myListAdapter = ExecutorAdapter(this.context as Activity,listExecutorsItems,listExecutors)
 
 
         var listView = view?.findViewById<ListView>(R.id.listArtist)
@@ -102,38 +115,50 @@ class ArtistListFragment : Fragment() {
 
     }
 
-//addExecutorFragment
-//    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+
+
+
+//    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 //
-//        inflater?.inflate(R.menu.menu,menu);
+//        if(item?.itemId == R.id.action_search_executor)
+//        {
+//            //  var intent = Intent()
+//            // startActivity(intent)
+//        }
 //
-//        val searchItem = menu?.findItem(R.id.action_search)
-//
-//        val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                // perform query here
-//
-//                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
-//                // see https://code.google.com/p/android/issues/detail?id=24599
-//                searchView.clearFocus()
-//
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String): Boolean {
-//                return false
-//            }
-//        })
-//
-//
-//        // Expand the search view and request focus
-//        searchItem?.expandActionView()
-//        searchView.requestFocus()
-//
-//
-//        super.onCreateOptionsMenu(menu, inflater)
+//        return super.onOptionsItemSelected(item)
 //    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.executor_menu, menu)
+
+        var mSearch = menu?.findItem(R.id.action_search_executor)
+
+        var mSearchView = mSearch?.actionView as  android.support.v7.widget.SearchView
+          mSearchView.queryHint = "Search"
+
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener, android.support.v7.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                myListAdapter?.filter?.filter(newText)
+
+
+              //  myListAdapter!!.filter!!.filter(newText)
+
+                Log.w("SEARCH", newText);
+                return true
+            }
+        })
+
+    }
+
+
 }
 
 

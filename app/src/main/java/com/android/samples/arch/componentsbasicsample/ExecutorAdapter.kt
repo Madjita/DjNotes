@@ -9,12 +9,18 @@ import android.view.*
 import android.widget.*
 import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
-import java.text.DateFormat
-import java.util.*
 
 
-class ExecutorAdapter(private val context: Activity, private val listExecutors: ArrayList<Executor>, private val listTitle: ArrayList<String>)
+import kotlin.collections.ArrayList
+
+
+class ExecutorAdapter(private var context: Activity, private var listExecutors: ArrayList<Executor>, private var listTitle: ArrayList<String>)
     : ArrayAdapter<String>(context, R.layout.custom_listexecutor, listTitle) {
+
+    private var mOrigionalValues: List<String>? = null
+    private var mObjects: List<String>? = null
+    private val mFilter: Filter? = null
+
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater
@@ -287,6 +293,129 @@ class ExecutorAdapter(private val context: Activity, private val listExecutors: 
     }
 
 
+    /////////
 
+
+
+
+
+//
+//    override fun getFilter(): Filter {
+//        var myFilter = object : Filter() {
+//
+//            override fun performFiltering(constraint: CharSequence?): FilterResults {
+//
+//                var constraint = constraint
+//                // NOTE: this function is *always* called from a background thread, and
+//                // not the UI thread.
+//                constraint = constraint!!.toString().toLowerCase()
+//
+//                val resultFilter = Filter.FilterResults()
+//
+//                if (constraint != null && constraint.toString().length > 0) {
+//                    val filt = ArrayList<Executor>()
+//                    val lItems = listExecutors
+//
+//                    var i = 0
+//                    val l = lItems.size
+//                    while (i < l) {
+//                        val m = lItems[i]
+//                        if (m.getExecutorName().toLowerCase().contains(constraint)) {
+//                            filt.add(m)
+//
+//                        }
+//                        i++
+//                    }
+//                    resultFilter.count = filt.size
+//                    resultFilter.values = filt
+//                } else {
+//
+//                    resultFilter.count = listExecutors.size
+//                    resultFilter.values = listExecutors
+//
+//                }
+//
+//                return resultFilter
+//
+//            }
+//
+//            override fun publishResults(contraint: CharSequence, results: FilterResults) {
+//
+//
+//                listExecutors = results.values as ArrayList<Executor>
+//
+//                for(item in listExecutors)
+//                {
+//                    listTitle.add(item.getExecutorName())
+//                }
+//
+//                if (listExecutors.size > 0)
+//                    notifyDataSetChanged();
+//                else
+//                    notifyDataSetInvalidated();
+//            }
+//        }
+//
+//        return myFilter
+//    }
+//
+//
+
+//    var filtered: ArrayList<String>? = null
+//    private var filter: Filter? = null
+//
+//    override fun getFilter(): Filter {
+//        if (filter == null) {
+//            filter = MangaNameFilter()
+//        }
+//        return filter as Filter
+//    }
+//
+//     inner class MangaNameFilter : Filter() {
+//
+//
+//         @SuppressWarnings("unchecked")
+//        override fun publishResults(constraint: CharSequence, results: FilterResults) {
+//            // NOTE: this function is *always* called from the UI thread.
+//            var filtered = results.values as ArrayAdapter<String>
+//            notifyDataSetChanged()
+//        }
+//
+//         override fun performFiltering(constraint: CharSequence?): FilterResults {
+//            var constraint = constraint
+//            // NOTE: this function is *always* called from a background thread, and
+//            // not the UI thread.
+//            constraint = constraint!!.toString().toLowerCase()
+//
+//            var result = FilterResults()
+//
+//            if (constraint != null && constraint.toString().length > 0) {
+//                val filt = ArrayList<String>()
+//                val lItems = listTitle
+//
+//                var i = 0
+//                val l = lItems.size
+//                while (i < l) {
+//                    val m = lItems[i]
+//                    if (m.toLowerCase().contains(constraint))
+//                        filt.add(m)
+//                    i++
+//                }
+//                result.count = filt.size
+//                result.values = filt
+//            } else {
+//
+//                    result.count = listTitle.size
+//                    result.values = listTitle
+//
+//            }
+//
+//            return result
+//        }
+//
+//
+//    }
+
+    ////////
 
 }

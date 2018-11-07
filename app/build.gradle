@@ -60,6 +60,7 @@ dependencies {
     compile "org.jetbrains.anko:anko-commons:0.10.2"
     compile "org.jetbrains.anko:anko-design:0.10.2"
 
+
     implementation "android.arch.navigation:navigation-fragment:$nav_version" // use -ktx for Kotlin
     implementation "android.arch.navigation:navigation-ui:$nav_version" // use -ktx for Kotlin
 

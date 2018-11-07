@@ -1,12 +1,12 @@
 package com.android.samples.arch.componentsbasicsample
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.SearchRecentSuggestions
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -63,6 +63,11 @@ class EditTrackFragment : Fragment() {
             time_current?.text = track.getTime();
             teg_current?.text = track.getTeg();
 
+
+            view?.findViewById<EditText>(R.id.editText_trackName)?.setText(track.getTrackName())
+            view?.findViewById<EditText>(R.id.editText_timeTrack)?.setText(track.getTime())
+            view?.findViewById<EditText>(R.id.editText_tegTrack)?.setText(track.getTeg())
+
         };
 
         view?.findViewById<Button>(R.id.buttonAddTreck)?.setOnClickListener {
@@ -103,5 +108,7 @@ class EditTrackFragment : Fragment() {
         }
 
     }
+
+
 
 }

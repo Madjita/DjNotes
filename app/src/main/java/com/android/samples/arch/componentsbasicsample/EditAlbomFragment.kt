@@ -24,7 +24,7 @@ class EditAlbomFragment : Fragment() {
 
     private lateinit var viewModel: EndViewModel
 
-    private lateinit var dirpng: String
+    private lateinit var dirpngEditAlbom: String
 
     companion object {
         fun newInstance() = StartFragment()
@@ -63,17 +63,17 @@ class EditAlbomFragment : Fragment() {
         }
 
 
-        var img = view?.findViewById<ImageView>(R.id.img);
+        var img = view?.findViewById<ImageView>(R.id.imgEditAlbom);
         var albomName_current =  view?.findViewById<TextView>(R.id.textView_currentNameAlbom);
         var year_current =  view?.findViewById<TextView>(R.id.textView_currentYearAlbom);
         var teg_current =  view?.findViewById<TextView>(R.id.textView_currentTegAlbom);
 
         if (albom != null) {
 
-            dirpng = albom.getDirPng()
-            img?.setImageURI( Uri.parse(dirpng));
+            dirpngEditAlbom = albom.getDirPng()
+            img?.setImageURI( Uri.parse(dirpngEditAlbom));
 
-            if(dirpng != "null") {
+            if(dirpngEditAlbom != "null") {
                 img?.visibility = View.VISIBLE;
             }
 
@@ -82,16 +82,21 @@ class EditAlbomFragment : Fragment() {
             year_current?.text = albom.getYear();
             teg_current?.text = albom.getTeg();
 
+
+            view?.findViewById<EditText>(R.id.editText_albom)?.setText(albom.getAlbomName())
+            view?.findViewById<EditText>(R.id.editText_year)?.setText(albom.getYear())
+            view?.findViewById<EditText>(R.id.editText_teg)?.setText(albom.getTeg())
+
         };
 
 
         view?.findViewById<Button>(R.id.find)?.setOnClickListener {
 
-            val intent = Intent(Intent.ACTION_SEND)
-                    .setType("image/*")//*/*
-                    .setAction(Intent.ACTION_GET_CONTENT)
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_PICK
 
-            startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 100)
 
         }
 
@@ -123,7 +128,7 @@ class EditAlbomFragment : Fragment() {
             list?.add(year);
             list?.add(teg);
 
-            db.execSQL("UPDATE 'albom' SET AlbomName = '$albomName', Year = '$year',DirPng = '$dirpng',Teg = '$teg' WHERE id =$id");
+            db.execSQL("UPDATE 'albom' SET AlbomName = '$albomName', Year = '$year',DirPng = '$dirpngEditAlbom',Teg = '$teg' WHERE id =$id");
 
 
             //Закрытие клавиатуры
@@ -143,21 +148,29 @@ class EditAlbomFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 111 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
 
-            var img = view?.findViewById<ImageView>(R.id.img);
+            var img = view?.findViewById<ImageView>(R.id.imgEditAlbom);
 
 
             val selectedFile = data?.data!!//The uri with the location of the file
 
             img?.setImageURI(selectedFile);
 
+            img?.visibility = View.VISIBLE;
 
             var path = getPath(selectedFile);
 
-            dirpng = path!!;
 
-            img?.visibility = View.VISIBLE;
+            if(path == null)
+            {
+                dirpngEditAlbom = selectedFile.toString()
+            }
+            else
+            {
+                dirpngEditAlbom = path!!;
+            }
+
         }
         else
         {
@@ -174,7 +187,7 @@ class EditAlbomFragment : Fragment() {
 
             // Display a negative button on alert dialog
             builder.setNegativeButton("Нет"){dialog,which ->
-                dirpng = "null"
+                dirpngEditAlbom = "null"
                 view?.findViewById<ImageView>(R.id.img)?.visibility = View.GONE;
             }
 
