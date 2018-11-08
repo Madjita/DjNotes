@@ -218,7 +218,7 @@ class StartActivity : AppCompatActivity() {
 
                         Log.i(TAG, "Пользователь дал разрешение")
 
-                        setFlashlightOff();
+                      //  setFlashlightOff();
 
 
 
@@ -249,7 +249,7 @@ class StartActivity : AppCompatActivity() {
                         Log.i(TAG, "Пользователь дал разрешение")
 
 
-                        setFlashlightOn()  //Включить фанарик в новом потоке
+                      //  setFlashlightOn()  //Включить фанарик в новом потоке
 
                         val permission = ContextCompat.checkSelfPermission(this,
                                 Manifest.permission.READ_EXTERNAL_STORAGE)

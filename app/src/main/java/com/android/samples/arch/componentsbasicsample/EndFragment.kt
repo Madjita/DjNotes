@@ -6,24 +6,28 @@ import android.arch.lifecycle.ViewModelProviders
 import android.media.Image
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.ActionBarContextView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.util.Log
+import android.view.*
+import android.widget.*
 import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 import java.util.ArrayList
+import com.android.samples.arch.componentsbasicsample.R.id.item
+
+
 
 class EndFragment : Fragment() {
 
     private lateinit var viewModel: EndViewModel
+
+    private var myListAdapter: TrackAdapter? = null;
+    lateinit var mSearch: MenuItem;
 
     companion object {
         fun newInstance() = StartFragment()
@@ -40,9 +44,13 @@ class EndFragment : Fragment() {
         // Obtain ViewModel from ViewModelProviders, using this fragment as LifecycleOwner.
         viewModel = ViewModelProviders.of(this).get(EndViewModel::class.java)
 
+        //Tollbar seitings
+        setHasOptionsMenu(true)
+        var tollBar = view?.findViewById(R.id.toolbarTrack) as android.support.v7.widget.Toolbar
+        (activity as AppCompatActivity).setSupportActionBar(tollBar)
+
 
         val id = arguments?.getString("albomItem")?.toInt();
-
 
 
         var db = dbHelper.writableDatabase
@@ -68,6 +76,8 @@ class EndFragment : Fragment() {
             } while (cursor.moveToNext())
         }
 
+        tollBar.title = albom?.getAlbomName()
+
 
         var mCollapsingToolbar = view?.findViewById(R.id.collapsing) as CollapsingToolbarLayout
 
@@ -87,8 +97,6 @@ class EndFragment : Fragment() {
         }
 
 
-
-        var listTracks = ArrayList<String>();
         var listTrackItems = ArrayList<Track>();
 
        // cursor = db.rawQuery("SELECT * FROM 'track'", null);
@@ -109,14 +117,14 @@ class EndFragment : Fragment() {
                 val teg = cursor.getString(cursor.getColumnIndex("Teg"))
                 val currentTime = cursor.getLong(cursor.getColumnIndex("Data"))
 
-                listTracks.add(trackName)
+
                 listTrackItems.add(Track(id,trackName,time,teg))
                 listTrackItems.last().setDataMillis(currentTime)
 
             } while (cursor.moveToNext())
         }
 
-        val myListAdapter = TrackAdapter(this.context as Activity,listTrackItems,listTracks)
+        myListAdapter = TrackAdapter(this.context as Activity,listTrackItems)
 
 
 
@@ -137,6 +145,35 @@ class EndFragment : Fragment() {
 
             var listView = view?.findViewById<ListView>(R.id.listTrack)
             listView?.adapter = myListAdapter
+
+
+            val mAppBarLayout = view?.findViewById(R.id.appbar) as AppBarLayout
+
+            mAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+                var isShow = false
+                var scrollRange = -1
+
+                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                    if (scrollRange == -1) {
+                        scrollRange = appBarLayout.totalScrollRange
+                    }
+                    if (scrollRange + verticalOffset == 0) {
+
+                        if(isShow == false)
+                        {
+                            showOption()
+                            Log.w("ERROR SCROLL true ", (!isShow).toString());
+                        }
+                        isShow = true
+
+
+                    } else if (isShow) {
+                        isShow = false
+                        Log.w("ERROR SCROLL false", isShow.toString());
+                        hideOption()
+                    }
+                }
+            })
         })
 
 
@@ -144,6 +181,51 @@ class EndFragment : Fragment() {
 
 
 
+
+
+
+
+
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.track_menu, menu)
+
+
+
+        mSearch = menu?.findItem(R.id.action_search_track)!!
+
+        hideOption();
+
+
+        var mSearchView = mSearch?.actionView as  android.support.v7.widget.SearchView
+        mSearchView.queryHint = "Search"
+
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener, android.support.v7.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                myListAdapter?.getFilter()?.filter(newText)
+
+                return true
+            }
+        })
+
+    }
+
+    private fun hideOption() {
+        //var item = menu.findItem(id)
+        mSearch.isVisible = false
+    }
+
+    private fun showOption() {
+       // var item = menu.findItem(id)
+        mSearch.isVisible = true
     }
 
 

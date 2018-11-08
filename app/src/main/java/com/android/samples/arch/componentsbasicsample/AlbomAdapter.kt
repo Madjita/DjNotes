@@ -33,21 +33,44 @@ import java.nio.file.Files.exists
 
 
 
-class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayList<Albom>,private val listTitle: ArrayList<String>)
-    : ArrayAdapter<String>(context, R.layout.custom_listalbom, listTitle) {
+class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayList<Albom>)
+    : BaseAdapter(){
 
-    override fun getView(position: Int, view: View?, parent: ViewGroup): View {
+
+        val mInflater: LayoutInflater = LayoutInflater.from(context)
+        private var listFiltered : ArrayList<Albom> = listAlboms
+        private  var filterText: String = "";
+
+
+        override fun getCount(): Int {
+            return listFiltered.size
+        }
+
+        override fun getItem(position: Int): Any {
+            return listFiltered[position]
+        }
+
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
+        }
+
+
+
+
+
+
+        override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater
         val rowView = inflater.inflate(R.layout.custom_listalbom, null, true)
 
         val titleText = rowView.findViewById(R.id.title) as TextView
         val imageView = rowView.findViewById(R.id.icon) as ImageView
-        val executerText = rowView.findViewById(R.id.executer) as TextView
+        val tegText = rowView.findViewById(R.id.teg) as TextView
         val yearText = rowView.findViewById(R.id.year) as TextView
 
-        titleText.text = listAlboms[position].getAlbomName();
+        titleText.text = listFiltered[position].getAlbomName();
 
-        var path = listAlboms[position].getDirPng();
+        var path = listFiltered[position].getDirPng();
         var uri = Uri.parse(path);
 
 
@@ -74,7 +97,17 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
         }
 
-        yearText.text = listAlboms[position].getYear()
+        yearText.text = listFiltered[position].getYear()
+
+            if(listFiltered[position].getTeg() == "null")
+            {
+                tegText.text = ""
+            }
+            else
+            {
+                tegText.text = listFiltered[position].getTeg()
+            }
+
 
         var x:Int = 0;
 
@@ -177,7 +210,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
                             v?.let {
 
-                                var bundle = bundleOf("albomItem" to listAlboms[position].getId().toString())
+                                var bundle = bundleOf("albomItem" to listFiltered[position].getId().toString())
                                 Navigation.findNavController(it).navigate(R.id.end_action, bundle)
                             }
                         }
@@ -209,7 +242,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                                             itrmloyaot.setBackgroundColor(defaultColor)
 
                                             v?.let {
-                                                var bundle = bundleOf("albomItem" to listAlboms[position].getId().toString())
+                                                var bundle = bundleOf("albomItem" to listFiltered[position].getId().toString())
                                                 Navigation.findNavController(it).navigate(R.id.editAlbomFragment_action,bundle)
                                             }
 
@@ -225,7 +258,7 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                                                 // Set a positive button and its click listener on alert dialog
                                                 builder.setPositiveButton("Да"){dialog, which ->
                                                 //Удалить все треки прикрепленные к этому альбому
-                                                var listT = listAlboms[position].getAllTrack();
+                                                var listT = listFiltered[position].getAllTrack();
 
                                                 for (item in listT)
                                                 {
@@ -233,10 +266,14 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
                                                 }
 
                                                 //Удалить альбом
-                                                db.execSQL("DELETE FROM 'albom' WHERE id ='"+listAlboms[position].getId()+"'")
+                                                db.execSQL("DELETE FROM 'albom' WHERE id ='"+listFiltered[position].getId()+"'")
 
-                                                listTitle.removeAt(position);
-                                                listAlboms.removeAt(position);
+
+                                                listAlboms.remove(listFiltered[position]);
+                                                    if(filterText.count() > 0 ) {
+                                                        listFiltered.removeAt(position);
+                                                    }
+
                                                 notifyDataSetChanged();
 
 
@@ -294,6 +331,67 @@ class AlbomAdapter(private val context: Activity, private val listAlboms: ArrayL
 
         return rowView
     }
+
+
+    /////////
+
+
+    fun getFilter(): Filter {
+        var myFilter = object : Filter() {
+
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+
+                var constraint = constraint
+                // NOTE: this function is *always* called from a background thread, and
+                // not the UI thread.
+                constraint = constraint!!.toString().toLowerCase()
+
+                filterText = constraint;
+
+                val resultFilter = Filter.FilterResults()
+
+                if (constraint != null && constraint.toString().length > 0) {
+                    val filt = ArrayList<Albom>()
+                    val lItems = listAlboms
+
+                    var i = 0
+                    val l = lItems.size
+                    while (i < l) {
+                        val m = lItems[i]
+                        if (m.getAlbomName().toLowerCase().contains(constraint)) {
+                            filt.add(m)
+                        }
+                        i++
+                    }
+                    resultFilter.count = filt.size
+                    resultFilter.values = filt
+                } else {
+
+                    resultFilter.count = listAlboms.size
+                    resultFilter.values = listAlboms
+
+                }
+
+                return resultFilter
+
+            }
+
+            override fun publishResults(contraint: CharSequence, results: FilterResults) {
+
+                listFiltered = results.values as ArrayList<Albom>
+
+                if (listFiltered.size > 0)
+                    notifyDataSetChanged();
+                else
+                    notifyDataSetInvalidated();
+            }
+        }
+
+        return myFilter
+    }
+
+
+    ////////
 
 
 }

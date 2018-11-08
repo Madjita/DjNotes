@@ -6,9 +6,9 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.*
 import android.widget.*
 import androidx.navigation.Navigation
 
@@ -20,6 +20,8 @@ import java.util.*
 class StartFragment : Fragment() {
 
     private lateinit var viewModel: StartViewModel
+
+    private var myListAdapter: AlbomAdapter? = null;
 
     companion object {
         fun newInstance() = StartFragment()
@@ -34,6 +36,14 @@ class StartFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+
+
+        //Tollbar seitings
+        setHasOptionsMenu(true)
+        var tollBar = view?.findViewById(R.id.toolbarAlbom) as android.support.v7.widget.Toolbar
+        (activity as AppCompatActivity).setSupportActionBar(tollBar)
+
 
         // Obtain ViewModel from ViewModelProviders, using this fragment as LifecycleOwner.
         viewModel = ViewModelProviders.of(this).get(StartViewModel::class.java);
@@ -63,22 +73,18 @@ class StartFragment : Fragment() {
         }
 
 
-        var listAlboms = ArrayList<String>();
+
+        tollBar.title = executorItem?.getExecutorName()
+
+
+
+
         var listAlbomsItems = executorItem?.getItemsAlbomsToExecutor();
 
-
-        for (item in listAlbomsItems!!)
-        {
-            listAlboms.add(item.getAlbomName());
-        }
-
-
-
         //перевернуть массив
-        Collections.reverse(listAlboms)
         Collections.reverse(listAlbomsItems)
 
-        val myListAdapter = AlbomAdapter(this.context as Activity,listAlbomsItems!!,listAlboms)
+        myListAdapter = AlbomAdapter(this.context as Activity,listAlbomsItems!!)
 
 
         // Observe data on the ViewModel, exposed as a LiveData
@@ -104,6 +110,31 @@ class StartFragment : Fragment() {
 
     }
 
+
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.albom_menu, menu)
+
+        var mSearch = menu?.findItem(R.id.action_search_albom)
+
+        var mSearchView = mSearch?.actionView as  android.support.v7.widget.SearchView
+        mSearchView.queryHint = "Search"
+
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener, android.support.v7.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                myListAdapter?.getFilter()?.filter(newText)
+
+                return true
+            }
+        })
+
+    }
 
 
 }

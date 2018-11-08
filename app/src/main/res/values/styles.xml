@@ -16,7 +16,7 @@
         <item name="colorPrimary">@color/Container</item>
         <item name="android:textColorPrimary">@color/Black</item>
         <item name="android:windowBackground">@color/Text</item>
-        <!--<item name="android:navigationBarColor">@color/Container</item>-->
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
 
     </style>
 

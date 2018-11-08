@@ -14,12 +14,31 @@ import org.jetbrains.anko.bundleOf
 import kotlin.collections.ArrayList
 
 
-class ExecutorAdapter(private var context: Activity, private var listExecutors: ArrayList<Executor>, private var listTitle: ArrayList<String>)
-    : ArrayAdapter<String>(context, R.layout.custom_listexecutor, listTitle) {
+class ExecutorAdapter(private var context: Activity, private var listExecutors: ArrayList<Executor>)
+    : BaseAdapter(){
 
-    private var mOrigionalValues: List<String>? = null
-    private var mObjects: List<String>? = null
-    private val mFilter: Filter? = null
+
+    val mInflater: LayoutInflater = LayoutInflater.from(context)
+
+
+
+    private var listFiltered : ArrayList<Executor> = listExecutors
+    private  var filterText: String = "";
+
+
+
+
+    override fun getCount(): Int {
+        return listFiltered.size
+    }
+
+    override fun getItem(position: Int): Any {
+        return listFiltered[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
 
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
@@ -31,10 +50,10 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
         var itrmloyaot =  rowView.findViewById(R.id.itemExecutor) as CardView
 
 
-        var listAlboms = listExecutors[position].getItemsAlbomsToExecutor();
+        var listAlboms = listFiltered[position].getItemsAlbomsToExecutor();
 
 
-        executorName.text = listExecutors[position].getExecutorName();
+        executorName.text = listFiltered[position].getExecutorName();
         countAlbomsToExecutor.text = listAlboms.count().toString()
 
         var db = dbHelper.writableDatabase
@@ -142,7 +161,7 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
 
                             v?.let {
 
-                                var bundle = bundleOf("executorItem" to listExecutors[position].getId().toString())
+                                var bundle = bundleOf("executorItem" to listFiltered[position].getId().toString())
                                 Navigation.findNavController(it).navigate(R.id.action_artistListFragment_to_launcher_home, bundle)
                             }
                         }
@@ -177,7 +196,7 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
                                             itrmloyaot.setBackgroundColor(defaultColor)
 
                                             v?.let {
-                                                var bundle = bundleOf("executorItem" to listExecutors[position].getId().toString())
+                                                var bundle = bundleOf("executorItem" to listFiltered[position].getId().toString())
                                                 Navigation.findNavController(it).navigate(R.id.editExecutorFragment_action,bundle)
                                             }
 
@@ -214,10 +233,14 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
                                                     db.execSQL("DELETE FROM ${item.TABLE_NAME} WHERE id ='"+item.getId()+"'")
                                                 }
 
-                                                db.execSQL("DELETE FROM 'executor' WHERE id ='"+listExecutors[position].getId()+"'")
+                                                db.execSQL("DELETE FROM 'executor' WHERE id ='"+listFiltered[position].getId()+"'")
 
-                                                listTitle.removeAt(position);
-                                                listExecutors.removeAt(position);
+                                                listExecutors.remove(listFiltered[position])
+
+                                                if(filterText.count() > 0 ) {
+                                                    listFiltered.removeAt(position);
+                                                }
+
                                                 notifyDataSetChanged();
 
 
@@ -296,125 +319,61 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
     /////////
 
 
+    fun getFilter(): Filter {
+        var myFilter = object : Filter() {
+
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+
+                var constraint = constraint
+                // NOTE: this function is *always* called from a background thread, and
+                // not the UI thread.
+                constraint = constraint!!.toString().toLowerCase()
+
+                filterText = constraint;
+
+                val resultFilter = Filter.FilterResults()
+
+                if (constraint != null && constraint.toString().length > 0) {
+                    val filt = ArrayList<Executor>()
+                    val lItems = listExecutors
+
+                    var i = 0
+                    val l = lItems.size
+                    while (i < l) {
+                        val m = lItems[i]
+                        if (m.getExecutorName().toLowerCase().contains(constraint)) {
+                            filt.add(m)
+                        }
+                        i++
+                    }
+                    resultFilter.count = filt.size
+                    resultFilter.values = filt
+                } else {
+
+                    resultFilter.count = listExecutors.size
+                    resultFilter.values = listExecutors
+
+                }
+
+                return resultFilter
+
+            }
+
+            override fun publishResults(contraint: CharSequence, results: FilterResults) {
 
 
+                listFiltered = results.values as ArrayList<Executor>
 
-//
-//    override fun getFilter(): Filter {
-//        var myFilter = object : Filter() {
-//
-//            override fun performFiltering(constraint: CharSequence?): FilterResults {
-//
-//                var constraint = constraint
-//                // NOTE: this function is *always* called from a background thread, and
-//                // not the UI thread.
-//                constraint = constraint!!.toString().toLowerCase()
-//
-//                val resultFilter = Filter.FilterResults()
-//
-//                if (constraint != null && constraint.toString().length > 0) {
-//                    val filt = ArrayList<Executor>()
-//                    val lItems = listExecutors
-//
-//                    var i = 0
-//                    val l = lItems.size
-//                    while (i < l) {
-//                        val m = lItems[i]
-//                        if (m.getExecutorName().toLowerCase().contains(constraint)) {
-//                            filt.add(m)
-//
-//                        }
-//                        i++
-//                    }
-//                    resultFilter.count = filt.size
-//                    resultFilter.values = filt
-//                } else {
-//
-//                    resultFilter.count = listExecutors.size
-//                    resultFilter.values = listExecutors
-//
-//                }
-//
-//                return resultFilter
-//
-//            }
-//
-//            override fun publishResults(contraint: CharSequence, results: FilterResults) {
-//
-//
-//                listExecutors = results.values as ArrayList<Executor>
-//
-//                for(item in listExecutors)
-//                {
-//                    listTitle.add(item.getExecutorName())
-//                }
-//
-//                if (listExecutors.size > 0)
-//                    notifyDataSetChanged();
-//                else
-//                    notifyDataSetInvalidated();
-//            }
-//        }
-//
-//        return myFilter
-//    }
-//
-//
+                if (listFiltered.size > 0)
+                    notifyDataSetChanged();
+                else
+                    notifyDataSetInvalidated();
+            }
+        }
 
-//    var filtered: ArrayList<String>? = null
-//    private var filter: Filter? = null
-//
-//    override fun getFilter(): Filter {
-//        if (filter == null) {
-//            filter = MangaNameFilter()
-//        }
-//        return filter as Filter
-//    }
-//
-//     inner class MangaNameFilter : Filter() {
-//
-//
-//         @SuppressWarnings("unchecked")
-//        override fun publishResults(constraint: CharSequence, results: FilterResults) {
-//            // NOTE: this function is *always* called from the UI thread.
-//            var filtered = results.values as ArrayAdapter<String>
-//            notifyDataSetChanged()
-//        }
-//
-//         override fun performFiltering(constraint: CharSequence?): FilterResults {
-//            var constraint = constraint
-//            // NOTE: this function is *always* called from a background thread, and
-//            // not the UI thread.
-//            constraint = constraint!!.toString().toLowerCase()
-//
-//            var result = FilterResults()
-//
-//            if (constraint != null && constraint.toString().length > 0) {
-//                val filt = ArrayList<String>()
-//                val lItems = listTitle
-//
-//                var i = 0
-//                val l = lItems.size
-//                while (i < l) {
-//                    val m = lItems[i]
-//                    if (m.toLowerCase().contains(constraint))
-//                        filt.add(m)
-//                    i++
-//                }
-//                result.count = filt.size
-//                result.values = filt
-//            } else {
-//
-//                    result.count = listTitle.size
-//                    result.values = listTitle
-//
-//            }
-//
-//            return result
-//        }
-//
-//
-//    }
+        return myFilter
+    }
+
 
     ////////
 

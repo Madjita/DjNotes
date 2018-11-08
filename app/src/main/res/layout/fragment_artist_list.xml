@@ -34,7 +34,7 @@
         android:src="@android:drawable/ic_input_add"
         android:tint="@color/Black"
         app:backgroundTint="@color/colorPrimaryDark"
-        app:layout_anchor="@id/main.appbar"
+        app:layout_anchor="@id/toolbarArtist"
         app:layout_anchorGravity="right|end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

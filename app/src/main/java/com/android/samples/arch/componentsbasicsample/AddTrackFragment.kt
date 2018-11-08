@@ -67,7 +67,7 @@ class AddTrackFragment : Fragment() {
             db.execSQL("INSERT INTO 'track' ( 'TrackName', 'Time','Teg','Data') VALUES ( '$trackName', '$timeTrack','$teg','$currentTime')");
 
 
-            var cursor = db.rawQuery("SELECT * FROM 'track' WHERE TrackName = '$trackName'", null);
+            var cursor = db.rawQuery("SELECT * FROM 'track' WHERE TrackName = '$trackName' AND Data = '$currentTime'", null);
 
             if (cursor.moveToFirst()) {
 

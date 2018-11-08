@@ -99,7 +99,7 @@ class AddAlbomFragment : Fragment() {
             db.execSQL("INSERT INTO 'albom' ( 'AlbomName', 'Year','DirPng','Teg','Data') VALUES ( '$albomName','$year','$dirpng','$teg','$currentTime')");
 
 
-            var cursor = db.rawQuery("SELECT id FROM 'albom' WHERE AlbomName = '$albomName'", null);
+            var cursor = db.rawQuery("SELECT id FROM 'albom' WHERE AlbomName = '$albomName' AND Data = '$currentTime'", null);
 
             if (cursor.moveToFirst()) {
 

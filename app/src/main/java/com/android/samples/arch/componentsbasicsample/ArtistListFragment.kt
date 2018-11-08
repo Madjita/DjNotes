@@ -61,12 +61,14 @@ class ArtistListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
 
+        //Tollbar seitings
+        setHasOptionsMenu(true)
         var tollBar = view?.findViewById(R.id.toolbarArtist) as android.support.v7.widget.Toolbar
-
         tollBar.title = "Исполнители"
-
-
         (activity as AppCompatActivity).setSupportActionBar(tollBar)
+
+
+
 
         var db = dbHelper.writableDatabase
 
@@ -97,7 +99,7 @@ class ArtistListFragment : Fragment() {
        // Collections.reverse(listExecutors)
        // Collections.reverse(listExecutorsItems)
 
-        myListAdapter = ExecutorAdapter(this.context as Activity,listExecutorsItems,listExecutors)
+        myListAdapter = ExecutorAdapter(this.context as Activity,listExecutorsItems)//,listExecutors)
 
 
         var listView = view?.findViewById<ListView>(R.id.listArtist)
@@ -146,10 +148,7 @@ class ArtistListFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                myListAdapter?.filter?.filter(newText)
-
-
-              //  myListAdapter!!.filter!!.filter(newText)
+                myListAdapter?.getFilter()?.filter(newText)
 
                 Log.w("SEARCH", newText);
                 return true

@@ -11,8 +11,32 @@ import android.widget.*
 import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 
-class TrackAdapter(private val context: Activity, private val listTracks: ArrayList<Track>, private val listTrakName: ArrayList<String>)
-    : ArrayAdapter<String>(context, R.layout.custom_listtrack, listTrakName) {
+class TrackAdapter(private val context: Activity, private val listTracks: ArrayList<Track>)//, private val listTrakName: ArrayList<String>)
+   // : ArrayAdapter<String>(context, R.layout.custom_listtrack, listTrakName) {
+
+
+    : BaseAdapter(){
+
+
+    val mInflater: LayoutInflater = LayoutInflater.from(context)
+    private var listFiltered : java.util.ArrayList<Track> = listTracks
+    private  var filterText: String = "";
+
+
+    override fun getCount(): Int {
+        return listFiltered.size
+    }
+
+    override fun getItem(position: Int): Any {
+        return listFiltered[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+
+
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater
@@ -21,9 +45,8 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
         val trackText = rowView.findViewById(R.id.trackName) as TextView
         val timeText = rowView.findViewById(R.id.timeTrack) as TextView
 
-        trackText.text = listTracks[position].getTrackName();
-        timeText.text =  listTracks[position].getTime();
-
+        trackText.text = listFiltered[position].getTrackName();
+        timeText.text =  listFiltered[position].getTime();
 
 
         var x_down:Float = 0F;
@@ -143,7 +166,7 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
                                             itrmloyaot.setBackgroundColor(defaultColor)
 
                                             v?.let {
-                                                var bundle = bundleOf("trackId" to listTracks[position].getId().toString())
+                                                var bundle = bundleOf("trackId" to listFiltered[position].getId().toString())
                                                 Navigation.findNavController(it).navigate(R.id.editTrackFragment_action,bundle)
                                             }
 
@@ -166,11 +189,15 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
                                             builder.setPositiveButton("Да"){dialog, which ->
 
 
-                                                db.execSQL("DELETE FROM 'link_albom_track' WHERE idTreack ='"+listTracks[position].getId()+"'")
-                                                db.execSQL("DELETE FROM 'track' WHERE id ='"+listTracks[position].getId()+"'")
+                                                db.execSQL("DELETE FROM 'link_albom_track' WHERE idTreack ='"+listFiltered[position].getId()+"'")
+                                                db.execSQL("DELETE FROM 'track' WHERE id ='"+listFiltered[position].getId()+"'")
 
-                                                listTracks.removeAt(position);
-                                                listTrakName.removeAt(position);
+                                                listTracks.remove(listFiltered[position]);
+
+                                                if(filterText.count() > 0 ) {
+                                                    listFiltered.removeAt(position);
+                                                }
+
                                                 notifyDataSetChanged();
 
 
@@ -241,6 +268,68 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
 
         return rowView
     }
+
+
+
+    /////////
+
+
+    fun getFilter(): Filter {
+        var myFilter = object : Filter() {
+
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+
+                var constraint = constraint
+                // NOTE: this function is *always* called from a background thread, and
+                // not the UI thread.
+                constraint = constraint!!.toString().toLowerCase()
+
+                filterText = constraint;
+
+                val resultFilter = Filter.FilterResults()
+
+                if (constraint != null && constraint.toString().length > 0) {
+                    val filt = java.util.ArrayList<Track>()
+                    val lItems = listTracks
+
+                    var i = 0
+                    val l = lItems.size
+                    while (i < l) {
+                        val m = lItems[i]
+                        if (m.getTrackName().toLowerCase().contains(constraint)) {
+                            filt.add(m)
+                        }
+                        i++
+                    }
+                    resultFilter.count = filt.size
+                    resultFilter.values = filt
+                } else {
+
+                    resultFilter.count = listTracks.size
+                    resultFilter.values = listTracks
+
+                }
+
+                return resultFilter
+
+            }
+
+            override fun publishResults(contraint: CharSequence, results: FilterResults) {
+
+                listFiltered = results.values as java.util.ArrayList<Track>
+
+                if (listFiltered.size > 0)
+                    notifyDataSetChanged();
+                else
+                    notifyDataSetInvalidated();
+            }
+        }
+
+        return myFilter
+    }
+
+
+    ////////
 
 
 }
