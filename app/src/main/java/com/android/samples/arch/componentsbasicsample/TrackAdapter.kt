@@ -43,10 +43,20 @@ class TrackAdapter(private val context: Activity, private val listTracks: ArrayL
         val rowView = inflater.inflate(R.layout.custom_listtrack, null, true)
 
         val trackText = rowView.findViewById(R.id.trackName) as TextView
+        val tegText = rowView.findViewById(R.id.tegTrack) as TextView
         val timeText = rowView.findViewById(R.id.timeTrack) as TextView
 
         trackText.text = listFiltered[position].getTrackName();
         timeText.text =  listFiltered[position].getTime();
+
+        if(listFiltered[position].getTeg() == "null")
+        {
+            tegText.text = "";
+        }
+        else
+        {
+            tegText.text = listFiltered[position].getTeg();
+        }
 
 
         var x_down:Float = 0F;

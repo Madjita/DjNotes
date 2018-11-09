@@ -30,7 +30,7 @@
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Исполнитель:" />
+                    android:text="Исполнитель :" />
 
                 <EditText
                     android:id="@+id/editText_executor"
@@ -54,7 +54,7 @@
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Тег:" />
+                    android:text="Тег :" />
 
                 <EditText
                     android:id="@+id/editText_teg"

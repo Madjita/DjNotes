@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.ActionBarContextView
 import android.util.Log
@@ -19,6 +20,12 @@ import androidx.navigation.Navigation
 import org.jetbrains.anko.bundleOf
 import java.util.ArrayList
 import com.android.samples.arch.componentsbasicsample.R.id.item
+import android.widget.Toast
+import android.R.attr.orientation
+import android.content.res.Configuration
+import android.opengl.Visibility
+import android.widget.AbsListView
+
 
 
 
@@ -27,6 +34,8 @@ class EndFragment : Fragment() {
     private lateinit var viewModel: EndViewModel
 
     private var myListAdapter: TrackAdapter? = null;
+    private lateinit var mbackdrop: AppBarLayout;
+    private lateinit var mCollapsingToolbar:CollapsingToolbarLayout ;
     lateinit var mSearch: MenuItem;
 
     companion object {
@@ -48,6 +57,9 @@ class EndFragment : Fragment() {
         setHasOptionsMenu(true)
         var tollBar = view?.findViewById(R.id.toolbarTrack) as android.support.v7.widget.Toolbar
         (activity as AppCompatActivity).setSupportActionBar(tollBar)
+
+      //  mbackdrop =    view?.findViewById(R.id.appbar) as AppBarLayout
+
 
 
         val id = arguments?.getString("albomItem")?.toInt();
@@ -79,9 +91,9 @@ class EndFragment : Fragment() {
         tollBar.title = albom?.getAlbomName()
 
 
-        var mCollapsingToolbar = view?.findViewById(R.id.collapsing) as CollapsingToolbarLayout
+     //   mCollapsingToolbar = view?.findViewById(R.id.collapsing) as CollapsingToolbarLayout
 
-        mCollapsingToolbar.title = albom?.getAlbomName()
+       // mCollapsingToolbar.title = albom?.getAlbomName()
 
 
         var addTrack = view?.findViewById(R.id.addTrack) as FloatingActionButton
@@ -139,41 +151,135 @@ class EndFragment : Fragment() {
 
             if(path != "null")
             {
-                view?.findViewById<ImageView>(R.id.backdrop)?.setImageURI(Uri.parse(path));
+               // view?.findViewById<ImageView>(R.id.backdrop)?.setImageURI(Uri.parse(path));
             }
 
 
             var listView = view?.findViewById<ListView>(R.id.listTrack)
             listView?.adapter = myListAdapter
 
-
-            val mAppBarLayout = view?.findViewById(R.id.appbar) as AppBarLayout
-
-            mAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-                var isShow = false
-                var scrollRange = -1
-
-                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                    if (scrollRange == -1) {
-                        scrollRange = appBarLayout.totalScrollRange
-                    }
-                    if (scrollRange + verticalOffset == 0) {
-
-                        if(isShow == false)
-                        {
-                            showOption()
-                            Log.w("ERROR SCROLL true ", (!isShow).toString());
-                        }
-                        isShow = true
+            ViewCompat.setNestedScrollingEnabled(listView!!, true);
 
 
-                    } else if (isShow) {
-                        isShow = false
-                        Log.w("ERROR SCROLL false", isShow.toString());
-                        hideOption()
-                    }
-                }
-            })
+//
+//            listView?.setOnScrollListener(object : AbsListView.OnScrollListener {
+//
+//                override fun onScroll(view: AbsListView,
+//                                      firstVisibleItem: Int,
+//                                      visibleItemCount: Int,
+//                                      totalItemCount: Int) {
+//                    val firstItemVisible = listView.getFirstVisiblePosition() === 0
+//                    val topOfFirstItemVisible = listView.getChildAt(0) != null && listView.getChildAt(0).top === 0
+//
+//
+//                    Log.w("onScroll firstItemVisible", firstVisibleItem.toString())
+//                    Log.w("onScroll topOfFirstItemVisible", topOfFirstItemVisible.toString())
+//
+//
+//                    if(firstVisibleItem == 0 && topOfFirstItemVisible == true)
+//                    {
+////                        val params = mCollapsingToolbar.getLayoutParams() as AppBarLayout.LayoutParams
+////                        params.setScrollFlags(1);
+////                        mbackdrop.visibility = View.VISIBLE
+////                        mCollapsingToolbar.visibility = View.VISIBLE
+////                        mCollapsingToolbar.setLayoutParams(params)
+////
+////                        mbackdrop.setExpanded(true);
+//                    }
+//                    else
+//                    {
+////                        mbackdrop.setExpanded(false);
+////
+////                        val params = mCollapsingToolbar.getLayoutParams() as AppBarLayout.LayoutParams
+////                        params.setScrollFlags(0);
+////                        mbackdrop.visibility = View.GONE
+////                        mCollapsingToolbar.visibility = View.GONE
+////                        mCollapsingToolbar.setLayoutParams(params)
+//
+//                    }
+//
+//                    if (topOfFirstItemVisible) {
+//                        //этот блок выполняется при прокрутке списка вверх
+//
+//                    }
+//                    else
+//                    {
+//
+//                    }
+//
+//                    if(firstItemVisible)
+//                    {
+//
+//                    }
+//                }
+//
+//                override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
+//
+//
+//                }
+//
+//            })
+
+
+
+
+
+
+        //    val mAppBarLayout = view?.findViewById(R.id.appbar) as AppBarLayout
+
+//            mbackdrop.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+//                var isShow = false
+//                var scrollRange = -1
+//
+//                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+//
+//
+//                    Log.w("ERROR scrollRange", (scrollRange+ verticalOffset).toString());
+//
+//                    if (scrollRange == -1) {
+//                        scrollRange = appBarLayout.totalScrollRange
+//                    }
+//                    if (scrollRange + verticalOffset == 0) {
+//
+//                        if(isShow == false)
+//                        {
+//                            //showOption()
+//                            Log.w("ERROR SCROLL true ", (!isShow).toString());
+//
+//
+////                            val params = mCollapsingToolbar.getLayoutParams() as AppBarLayout.LayoutParams
+////                            params.setScrollFlags(0);
+////                            mbackdrop.visibility = View.GONE
+////                            mCollapsingToolbar.visibility = View.GONE
+//                       //     mCollapsingToolbar.setLayoutParams(params)
+//
+//                        }
+//                        isShow = true
+//
+//
+//
+//
+//
+//                    } else if (isShow) {
+//                        isShow = false
+//
+//
+////                        val params = mCollapsingToolbar.getLayoutParams() as AppBarLayout.LayoutParams
+////                        params.setScrollFlags(0);
+////                        mCollapsingToolbar.setLayoutParams(params)
+//
+//
+//                        Log.w("ERROR SCROLL false", isShow.toString());
+//                       // hideOption()
+//                    }
+//
+//
+//                }
+//            })
+
+
+
+
         })
 
 
@@ -226,6 +332,29 @@ class EndFragment : Fragment() {
     private fun showOption() {
        // var item = menu.findItem(id)
         mSearch.isVisible = true
+    }
+
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+      //  var mbackdrop =  view?.findViewById(R.id.appbar) as AppBarLayout
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation === Configuration.ORIENTATION_LANDSCAPE) {
+
+
+//           mbackdrop.layoutParams.height = 200;
+//            mbackdrop.requestLayout();
+
+            Toast.makeText(context, "landscape", Toast.LENGTH_SHORT).show()
+        } else if (newConfig.orientation === Configuration.ORIENTATION_PORTRAIT) {
+
+//            mbackdrop.layoutParams.height = 300;
+//            mbackdrop.requestLayout();
+
+            Toast.makeText(context, "portrait", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

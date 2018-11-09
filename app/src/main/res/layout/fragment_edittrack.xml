@@ -35,7 +35,7 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Текущее Название Трека : " />
+                    android:text="Название Трека : " />
 
                 <TextView
                     android:id="@+id/textView_currentTrackName"
@@ -75,7 +75,7 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Текущая длительность трека : " />
+                    android:text="Длительность трека :" />
 
                 <TextView
                     android:id="@+id/textView_currentTackTime"
@@ -109,11 +109,11 @@
                 android:orientation="horizontal">
 
 
-            <TextView
+                <TextView
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Текущий тег : " />
+                    android:text="Тег :" />
 
                 <TextView
                     android:id="@+id/textView_currentTrackTeg"

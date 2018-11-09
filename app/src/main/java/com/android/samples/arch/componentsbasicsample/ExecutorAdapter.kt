@@ -46,6 +46,7 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
         val rowView = inflater.inflate(R.layout.custom_listexecutor, null, true)
 
         val executorName = rowView.findViewById(R.id.ExecutorName) as TextView
+        val executorTeg = rowView.findViewById(R.id.ExecutorTeg) as TextView
         val countAlbomsToExecutor = rowView.findViewById(R.id.countAlbomsToExecutor) as TextView
         var itrmloyaot =  rowView.findViewById(R.id.itemExecutor) as CardView
 
@@ -54,6 +55,16 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
 
 
         executorName.text = listFiltered[position].getExecutorName();
+
+        if(listFiltered[position].getTeg() == "null")
+        {
+            executorTeg.text ="";
+        }
+        else
+        {
+            executorTeg.text = listFiltered[position].getTeg();
+        }
+
         countAlbomsToExecutor.text = listAlboms.count().toString()
 
         var db = dbHelper.writableDatabase
