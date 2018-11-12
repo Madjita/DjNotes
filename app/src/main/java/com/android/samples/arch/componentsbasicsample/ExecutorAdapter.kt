@@ -51,6 +51,8 @@ class ExecutorAdapter(private var context: Activity, private var listExecutors: 
         var itrmloyaot =  rowView.findViewById(R.id.itemExecutor) as CardView
 
 
+
+
         var listAlboms = listFiltered[position].getItemsAlbomsToExecutor();
 
 
